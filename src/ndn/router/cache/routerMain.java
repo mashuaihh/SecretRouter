@@ -13,7 +13,7 @@ public class routerMain {
   
     
     // some constants
-    public static final int resourceNum = 1000;  // default 4 6 8 1000
+    public static final int resourceNum = 10;  // default 4 6 8 1000
     public static  double EFRThreshold = 0.00157964;  // this is actually set in class DistributionRequestSequence
     public static final double CacheThreshold = 1.0;    // 0.5 0.1
     public static final int routerCacheSizedenominator = 100; // default= resourceNum/10

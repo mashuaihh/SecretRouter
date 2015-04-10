@@ -169,6 +169,14 @@ public class routerCache {
 	}
 	*/
 	
+	public void setServer() {
+		this.isServer = true;
+	}
+	
+	public boolean isServer() {
+		return this.isServer;
+	}
+	
 	private int cachesize = 0;              // average resource size:store 10 ones on average
 	private int routerstrategy = 0;         // router strategy 0-LRU
 	private routerNode routernode;          // corresponding router node
@@ -177,4 +185,6 @@ public class routerCache {
     private LinkedList<routerResource> Llist; // store cached resources 
     private Random mRandom;                // determine whether to cache 
     private long[] LFUAccessFrequece;       // store resource access frequence in this node
+    private boolean isServer = false;
+    
 }

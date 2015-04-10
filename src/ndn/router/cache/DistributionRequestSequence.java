@@ -221,19 +221,28 @@ public class DistributionRequestSequence {
 			while(pp > requestFrequency[index]) index++; // so index is a picked random number
 	    	routerResource rR = rQueue[index];
 	    	
-	    	// get nodes containing the resource. One resource stay only in one node now. Extend this later 
-	    	routerNode vtemp = null; 
-	    	for(routerNode v : rTable){
-	    		if(rMap.get(v).getResource().contains(rR)){
-	    			vtemp = v;
-	    			break;
+	    	/**
+	    	 * set request node and server cannot be request node
+	    	 */
+	    	routerNode requestNode = null;
+	    	do {
+	    		requestNode = rTable.get(routerRandom.nextInt(rTablesize));
+	    	} while(requestNode.getid() == 0);
+	    	
+	    	
+	    	/**
+	    	 * set destination to server node 0
+	    	 */
+	    	routerNode destinationNode = null;
+	    	for (routerNode v : rTable) {
+	    		routerCache cache = rMap.get(v);
+	    		if (cache.isServer()) {
+	    			destinationNode = v;
 	    		}
 	    	}
 	    	
 	    	// (object, request)
-    		e = new simulationEvent(etime, 0, 
-	    			rTable.get(routerRandom.nextInt(rTablesize)), 
-	    			rR, vtemp);
+    		e = new simulationEvent(etime, 0, requestNode, rR, destinationNode);
     		
 /*    	    		try{
     	    		    graphout.println("" + e.getEventTime()

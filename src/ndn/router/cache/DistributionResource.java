@@ -60,7 +60,31 @@ public class DistributionResource {
                 List<routerNode> vlist = new ArrayList<routerNode>(Collections.unmodifiableCollection(rMap.keySet()));
 	        	for(int i=0;i<rsize; i++){
 	        		// distribute rQueue[i] to nodes
-	        		rMap.get((routerNode)vlist.get(mRandom2.nextInt(rMap.size()))).putResource(rQueue[i]);   
+	        		routerCache cache = rMap.get((routerNode)vlist.get(mRandom2.nextInt(rMap.size())));
+	        		cache.putResource(rQueue[i]);
+	        	}
+	        	/**
+	        	 * set the server to node 0
+	        	 * @author Mashuai
+	        	 */
+	        	for (routerNode e : vlist) {
+	        		if (e.getid() == 0) {
+	        			routerCache cache = rMap.get(e);
+	        			cache.setServer();
+	        		}
+	        	}
+	        	
+	        	/**
+	        	 * put all resources into server node 0
+	        	 * @author Mashuai
+	        	 */
+	        	for (routerNode e : vlist) {
+	        		routerCache cache = rMap.get(e);
+	        		if (cache.isServer()) {
+	        			for (int i = 0; i < rsize; i++) {
+	        				cache.putResource(rQueue[i]);
+	        			}
+	        		}
 	        	}
 	        	
                 // output vertex-resource info
