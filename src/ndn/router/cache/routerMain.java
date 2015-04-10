@@ -4,7 +4,7 @@ import javax.swing.JFrame;
 import edu.uci.ics.jung.graph.Graph;
 
 public class routerMain {
-    public static final int iswitch = 0; // 0-generate new graph; 1-load from file
+    public static final int iswitch = 1; // 0-generate new graph; 1-load from file
     public static final int iswitch3 = 0; // 0-generate new resource; 1-load from file
     public static final int powerlawGenerator = 0;  // generating powerlaw sequence 0-new 1-load
     
@@ -35,12 +35,8 @@ public class routerMain {
 		//Graph<routerNode, routerLink> graphRandom = new GraphTopologyBA().getGraph();
         //System.out.println("BA graph is created");
 
-        // visualize the graph
-/*		JFrame jf = new routerVisulization(graphRandom);
-		jf.pack();
-		jf.setVisible(true);
-       System.out.println("graph is shown");
-*/		
+
+		
 		// generate router cache
 		routerCacheManager rCacheManager = new routerCacheManager(graphRandom);
         System.out.println("node cache is assigned");
@@ -51,7 +47,11 @@ public class routerMain {
         System.out.println("resource is assigned");
 	
 		
-		
+        // visualize the graph
+        JFrame jf = new routerVisulization(graphRandom, resDistribution);
+		jf.pack();
+		jf.setVisible(true);
+       System.out.println("graph is shown");
 		// generate event simulation 
 		//simulationQueue sQueue = new simulationQueue();
         //System.out.println("simulation queue is created");

@@ -33,10 +33,15 @@ public class routerVisulization extends JFrame{
     /**
      * 
      */
-	public routerVisulization(Graph<routerNode, routerLink> gGraph) {
+	public routerVisulization(Graph<routerNode, routerLink> gGraph, DistributionResource dr) {
 		this.gGraph = gGraph;
-		// layout: KKLayout, FRLayout, ISOMLayout, CircleLayout
-        final Layout<routerNode, routerLink> layout = new ISOMLayout<routerNode,routerLink>(gGraph);
+		this.dr = dr;
+		// layout: KKLayout :), FRLayout :), ISOMLayout, CircleLayout
+//        final Layout<routerNode, routerLink> layout = new ISOMLayout<routerNode,routerLink>(gGraph);
+//        final Layout<routerNode, routerLink> layout = new SpringLayout<routerNode,routerLink>(gGraph);
+        final Layout<routerNode, routerLink> layout = new KKLayout<routerNode,routerLink>(gGraph);
+
+
         layout.setSize(new Dimension(1000, 800));
         vssa = new VertexShapeSizeAspect<routerNode, routerLink>(gGraph);
         vv = new VisualizationViewer<routerNode, routerLink>(layout);
@@ -62,11 +67,13 @@ public class routerVisulization extends JFrame{
 	}
 	
 	
+	
     /**
      * the visual component and renderer for the graph
      */
 	private VisualizationViewer<routerNode, routerLink> vv;
 	private Graph<routerNode, routerLink> gGraph; 
+	private DistributionResource dr;
 	
 	
 	
@@ -85,7 +92,8 @@ public class routerVisulization extends JFrame{
     extends AbstractVertexShapeTransformer <V>
     implements Transformer<V,Shape>  {
     	
-        protected boolean funny_shapes = true;
+
+        protected boolean funny_shapes = false;
         protected Graph<V,E> graph;
 //        protected AffineTransform scaleTransform = new AffineTransform();
         
@@ -115,8 +123,9 @@ public class routerVisulization extends JFrame{
                 else
                     return factory.getRegularStar(v, graph.degree(v));
             }
-            else
+            else {
                 return factory.getEllipse(v);
+            }
         }
     }
     protected VertexShapeSizeAspect<routerNode, routerLink> vssa;
