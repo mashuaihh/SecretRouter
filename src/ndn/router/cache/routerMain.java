@@ -62,12 +62,12 @@ public class routerMain {
         // generate powerlaw accees frequency
         drs.powlawGenerate();
 
-        // EFR routing
-      //  routingEFRPath rEFRP = new routingEFRPath(resDistribution);
-//		JFrame jf2 = new routerVisulization(rEFRP.getTransfromedgraph());
+//        // EFR routing
+//        routingEFRPath rEFRP = new routingEFRPath(resDistribution);
+//		JFrame jf2 = new routerVisulization(rEFRP.getTransfromedgraph(), resDistribution);
 //		jf2.pack();
 //		jf2.setVisible(true);
- //       System.out.println("graph2 is shown"); 
+//        System.out.println("graph2 is shown"); 
         
        // rEFRP.TestshortestPath();
    /*     

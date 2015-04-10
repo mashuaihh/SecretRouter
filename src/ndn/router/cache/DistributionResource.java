@@ -15,7 +15,11 @@ import java.util.Map;
 import java.util.Random;
 import java.util.StringTokenizer;
 
+import org.apache.commons.collections15.Transformer;
+
+import edu.uci.ics.jung.algorithms.shortestpath.DijkstraShortestPath;
 import edu.uci.ics.jung.graph.Graph;
+import edu.uci.ics.jung.graph.util.Pair;
 
 /**
  * @author Administrator
@@ -78,13 +82,25 @@ public class DistributionResource {
 	        	 * put all resources into server node 0
 	        	 * @author Mashuai
 	        	 */
+	        	routerNode serverNode = null;
 	        	for (routerNode e : vlist) {
 	        		routerCache cache = rMap.get(e);
 	        		if (cache.isServer()) {
+	        			serverNode = e;
 	        			for (int i = 0; i < rsize; i++) {
 	        				cache.putResource(rQueue[i]);
 	        			}
 	        		}
+	        	}
+	        	
+	        	/**
+	        	 * set all nodes' hop
+	        	 * @author Mashuai
+	        	 */
+	        	for (routerNode e : vlist) {
+	        		List<routerNode> lllist = getPathVertexList(e, serverNode);
+	        		int hop = lllist.size() - 1;
+	        		e.setHop(hop);
 	        	}
 	        	
                 // output vertex-resource info
@@ -214,6 +230,42 @@ public class DistributionResource {
     	System.out.println("Node cache size:" + totalResourceSize);
 	}
 	
+	/**
+	 * get the dijikstra hop
+	 * @author Mashuai
+	 */
+	private List<routerNode> getPathVertexList(routerNode beginNode, routerNode endNode) {
+		Transformer<routerLink, Integer> wtTransformer;      // transformer for getting edge weight
+		wtTransformer = new Transformer<routerLink, Integer>() {
+            public Integer transform(routerLink link) {
+                return link.getWeight();
+        	}
+        };		
+
+		
+		List<routerNode> vlist;
+		DijkstraShortestPath<routerNode, routerLink> DSPath = 
+	    	    new DijkstraShortestPath<routerNode, routerLink>(gGraph, wtTransformer);
+        	// get the shortest path in the form of edge list 
+        List<routerLink> elist = DSPath.getPath(beginNode, endNode);
+		
+    		// get the node list form the shortest path
+	    Iterator<routerLink> ebIter = elist.iterator();
+	    vlist = new ArrayList<routerNode>(elist.size() + 1);
+    	vlist.add(0, beginNode);
+	    for(int i=0; i<elist.size(); i++){
+		   routerLink aLink = ebIter.next();
+	    	   	// get the nodes corresponding to the edge
+    		Pair<routerNode> endpoints = gGraph.getEndpoints(aLink);
+	        routerNode V1 = endpoints.getFirst();
+	        routerNode V2 = endpoints.getSecond();
+	    	if(vlist.get(i) == V1)
+	    	   vlist.add(i+1, V2);
+	        else
+	        	vlist.add(i+1, V1);
+	    }
+	    return vlist;
+	}
 
 	
 	/**

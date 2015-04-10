@@ -17,6 +17,14 @@ public class routerNode {
 
 	}
 	
+	public void setHop(int i) {
+		this.hop = i;
+	}
+	
+	public int getHop() {
+		return this.hop;
+	}
+	
 	/**
 	 * for debugging
 	 */
@@ -29,4 +37,5 @@ public class routerNode {
 	}
 	
 	private int id;       // node identity
+	private int hop;
 }
