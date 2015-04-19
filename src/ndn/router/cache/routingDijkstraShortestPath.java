@@ -70,6 +70,7 @@ public class routingDijkstraShortestPath {
 		Lcd lcd = new Lcd(se, vlist, this.rMap);
 		lcd.routing();
 		lcd.showPath();
+		lcd.stat();
 	}
 	
 	

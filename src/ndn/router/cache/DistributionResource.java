@@ -61,12 +61,8 @@ public class DistributionResource {
 	        	// distribute the resource to the nodes. one resource can only stay on one node now.
 	    		Random mRandom2 = new Random();
                 List<routerNode> vlist = new ArrayList<routerNode>(Collections.unmodifiableCollection(rMap.keySet()));
-	        	for(int i=0;i<rsize; i++){
-	        		// distribute rQueue[i] to nodes
-	        		routerCache cache = rMap.get((routerNode)vlist.get(mRandom2.nextInt(rMap.size())));
-	        		cache.putResource(rQueue[i]);
-	        	}
-	        	/**
+                
+                /**
 	        	 * set the server to node 0
 	        	 * @author Mashuai
 	        	 */
@@ -76,6 +72,17 @@ public class DistributionResource {
 	        			cache.setServer();
 	        		}
 	        	}
+                
+	        	for(int i=0;i<rsize; i++){
+	        		// distribute rQueue[i] to nodes
+	        		routerCache cache = rMap.get((routerNode)vlist.get(mRandom2.nextInt(rMap.size())));
+	        		if (!cache.isServer()) {
+	        			cache.putResource(rQueue[i]);
+	        		} else {
+	        			
+	        		}
+	        	}
+	        	
 	        	
 	        	/**
 	        	 * put all resources into server node 0
@@ -219,7 +226,7 @@ public class DistributionResource {
   		for(int i = 0;i < rsize; i++){
   			totalResourceSize += rQueue[i].getSize();
     	}
-  		totalResourceSize = totalResourceSize/routerMain.routerCacheSizedenominator; // 5% of all the total size
+  		totalResourceSize = totalResourceSize/routerMain.routerCacheSizedenominator; // 10% of all the total size
   		
   		// set cache size
     	for (routerNode v : Collections.unmodifiableCollection(rMap.keySet())) {

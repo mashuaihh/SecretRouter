@@ -17,7 +17,7 @@ public class routerCache {
 		this.cachesize = cachesize;
 		this.routerstrategy = routerstrategy;
         this.remainingCacheSize = cachesize;
-        Llist = new LinkedList<routerResource>();
+        Llist = new LinkedList<routerResource>(); //store the cached resources
         rResource = new LinkedList<routerResource>();
         mRandom = new Random(); 
         LFUAccessFrequece = new long[routerMain.resourceNum];  // store object access frequence
@@ -46,6 +46,7 @@ public class routerCache {
 		routerResource rR1 = se.getrouterResource();
 		// cache the resource 
 		if(Llist.contains(rR1)){  // the cahce contains the resource?
+			System.out.println("yes " + rR1.getID());
 		    // rearrange the list
 			Llist.remove(rR1);
 			Llist.addFirst(rR1);
@@ -60,7 +61,7 @@ public class routerCache {
 	/**
 	 * LRU schedule
 	 */
-    private void scheduleLRU(routerResource rR1){
+    public void scheduleLRU(routerResource rR1){
     	int iSize = rR1.getSize();
     	if(iSize > cachesize)return; // too large to store
     	
@@ -131,6 +132,10 @@ public class routerCache {
 	 */
 	public void putResource(routerResource rR){
 		rResource.addLast(rR);
+	}
+	
+	public boolean hasResource(routerResource resource) {
+		return Llist.contains(resource)||this.isServer;
 	}
 	
 	/**

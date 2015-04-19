@@ -15,6 +15,9 @@ public class NewAlgo {
 	private Map<routerNode, routerCache> rMap;
 	public List<routerNode> realList = new ArrayList<routerNode>();
 	
+	private static int requestNum = 0;
+	private static int hitNum = 0;
+	
 	public NewAlgo(simulationEvent se, List<routerNode> vlist, Map<routerNode, routerCache> rMap) {
 		this.rMap = rMap;
 		this.se = se;
@@ -23,6 +26,8 @@ public class NewAlgo {
 	}
 	
 	public void showPath() {
+		out.println();
+		out.println("Requesting resource " + this.rResource.getID());
 		out.print("Path to Server: ");
 		for (int i = 0; i < vlist.size(); i++) {
 			routerNode each = vlist.get(i);
@@ -30,6 +35,31 @@ public class NewAlgo {
 				out.println(each.getid());
 			else 
 				out.print(each.getid() + " -> ");
+		}
+		out.print("Real path:      ");
+		for (int i = 0; i < realList.size(); i++) {
+			routerNode each = realList.get(i);
+			if (i == realList.size() - 1)
+				out.println(each.getid());
+			else 
+				out.print(each.getid() + " -> ");
+		}
+
+	}
+	
+	public void stat() {
+		out.println("requestNum: " + this.requestNum + "  hitNum: " + this.hitNum);
+		double rate = this.hitNum * 1.0 / this.requestNum;
+		out.println("Hit rate is: " + rate);
+	}
+	
+	public routerNode getLowerNode(routerNode node) {
+		if (node.getid() == vlist.get(0).getid()) {
+			return node;
+		}
+		else {
+			int idx = vlist.indexOf(node);
+			return vlist.get(idx - 1);
 		}
 	}
 	
@@ -48,6 +78,22 @@ public class NewAlgo {
 	
 	public simulationEvent getEvent() {
 		return this.se;
+	}
+	
+	public int getHitNum() {
+		return this.hitNum;
+	}
+	
+	public void addHitNum() {
+		this.hitNum++;
+	}
+	
+	public void addRequestNum() {
+		this.requestNum++;
+	}
+	
+	public int getRequestNum() {
+		return this.requestNum;
 	}
 
 }
