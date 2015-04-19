@@ -3,9 +3,13 @@
  */
 package ndn.router.cache;
 
+import ndn.router.newalgo.Lcd;
+
 import org.apache.commons.collections15.Transformer;
+
 import edu.uci.ics.jung.algorithms.shortestpath.*;
 import edu.uci.ics.jung.graph.Graph;
+
 import java.util.*;
 import java.io.BufferedReader;
 import java.io.FileReader;
@@ -63,6 +67,9 @@ public class routingDijkstraShortestPath {
 		routerNode serverNode = se.getResourceNode();
 		List<routerNode> vlist = getPathVertexList(requestNode, serverNode);
 		
+		Lcd lcd = new Lcd(se, vlist, this.rMap);
+		lcd.routing();
+		lcd.showPath();
 	}
 	
 	

@@ -89,7 +89,7 @@ public class routerMain {
 	 	//simulationEvent se = sQueue.getEvent();
 		int etype;
 		simulationEvent se;
-		long sTimes = 2000000;
+		long sTimes = 1000;
 		while(sTimes > 0){
 			sTimes--;
 			se = drs.eventgenerate();

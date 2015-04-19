@@ -41,7 +41,6 @@ public class DistributionResource {
 		//////////////////////////////////////
 		////////////////////////////////////// fix later
 		rCM.setresourceNum(rsize);
-		
 
 		
 		// distribute the resources to router node

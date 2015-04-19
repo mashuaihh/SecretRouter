@@ -38,29 +38,14 @@ public class routerCache {
 
 	/**
 	 * packet is coming in, tackle it via LRU
+	 * @return true this cache contains the resource, false this cache does not contain the resource.
 	 */
 	public boolean routing(simulationEvent se){
 		// determine whether to cache a resource 
 		
-////////////////////////////////////////////////////////////////////////////////////////////////
-//////////////////////testing cache//////////////////////////////////////////////
-      //if(se.getEventTime()>50000) System.out.println(Llist.size());
-		
-		
-		////////////////////////////////////////////////////////////////////////////////////////////////
-////////////////////////////////////////////////////////////////////////////////////////////////
-		
-		
 		routerResource rR1 = se.getrouterResource();
-		if(mRandom.nextDouble() > rR1.getcacheProbability()){ // do not tackle it
-			if(Llist.contains(rR1))
-				return true;
-			else
-				return false;
-		}
-		
 		// cache the resource 
-		if(Llist.contains(rR1)){  // resource is cached
+		if(Llist.contains(rR1)){  // the cahce contains the resource?
 		    // rearrange the list
 			Llist.remove(rR1);
 			Llist.addFirst(rR1);
