@@ -21,7 +21,7 @@ public class routerMain {
     public static final int resourceNum = 100;  // default 4 6 8 1000
     public static  double EFRThreshold = 0.00157964;  // this is actually set in class DistributionRequestSequence
     public static final double CacheThreshold = 1.0;    // 0.5 0.1
-    public static final int routerCacheSizedenominator = 10; // default= resourceNum/10
+    public static final int routerCacheSizedenominator = 50; // default= resourceNum/10
 
 
 	/**
@@ -94,7 +94,7 @@ public class routerMain {
 	 	//simulationEvent se = sQueue.getEvent();
 		int etype;
 		simulationEvent se;
-		long sTimes = 40;
+		long sTimes = 400;
 		while(sTimes > 0){
 			sTimes--;
 			se = drs.eventgenerate();

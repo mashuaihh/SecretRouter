@@ -7,6 +7,7 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
@@ -141,11 +142,16 @@ public class Cls extends NewAlgo {
 			return null;
 		} else {
 			routerNode upNode = super.getUpperNode(node);
-			routerTuple tuple = node.getTuple(rResource);
 			routerCache upCache = super.getCache(upNode);
 			List<routerResource> resList = cache.getOutResourceList();
-			for (routerResource e : resList) {
-				tuple.deleteTuple();
+			List<routerResource> tempList = new ArrayList<routerResource>();
+			for (int i = 0; i < resList.size(); i++) {
+				routerResource res = resList.get(i);
+				tempList.add(res);
+			}
+			for (routerResource e : tempList) {
+				routerTuple deletedTuple = node.getTuple(e);
+				deletedTuple.deleteTuple();
 				upCache.scheduleLRU(e, upNode);
 				cache.removeOutResource(e);
 			}

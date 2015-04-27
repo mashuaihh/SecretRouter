@@ -196,7 +196,6 @@ public class routerCache {
 	
 	private int cachesize = 0;              // average resource size:store 10 ones on average
 	private int routerstrategy = 0;         // router strategy 0-LRU
-	private routerNode routernode;          // corresponding router node
 	private LinkedList<routerResource> rResource; // store resources
     private int remainingCacheSize;         // remaining cache size
     private LinkedList<routerResource> Llist; // store cached resources 
