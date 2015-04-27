@@ -9,7 +9,7 @@ import static java.lang.System.out;
 import ndn.router.cache.*;
 
 public class NewAlgo {
-	private routerResource rResource;
+	public routerResource rResource;
 	private List<routerNode> vlist;
 	private simulationEvent se;
 	private Map<routerNode, routerCache> rMap;
@@ -48,17 +48,28 @@ public class NewAlgo {
 	}
 	
 	public void stat() {
-		out.println("requestNum: " + this.requestNum + "  hitNum: " + this.hitNum);
+		out.println("Hit rate: " + this.getHitRate());
+		out.println("Path stretch: " + this.getPathStretch());
+	}
+	
+	public double getHitRate() {
 		double rate = this.hitNum * 1.0 / this.requestNum;
-		out.println("Hit rate is: " + rate);
+		return rate;
+	}
+	
+	public double getPathStretch() {
+		double ps = this.realList.size() * 1.0 / this.vlist.size();
+		return ps;
 	}
 	
 	public routerNode getLowerNode(routerNode node) {
 		if (node.getid() == vlist.get(0).getid()) {
+			out.println("lower node: " + node.getid());
 			return node;
 		}
 		else {
 			int idx = vlist.indexOf(node);
+			out.println("lower node: " + vlist.get(idx - 1));
 			return vlist.get(idx - 1);
 		}
 	}

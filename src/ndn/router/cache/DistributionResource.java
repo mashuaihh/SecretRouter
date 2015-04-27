@@ -109,6 +109,14 @@ public class DistributionResource {
 	        		e.setHop(hop);
 	        	}
 	        	
+	        	/**
+	        	 * Initial the tuple of every resource in every node.
+	        	 * @author Mashuai
+	        	 */
+	        	for (routerNode e : vlist) {
+	        		e.addInTupleList(rQueue);
+	        	}
+	        	
                 // output vertex-resource info
                 graphout.println("" + rMap.size() + " vertice-resource info.");
                 int ionode = 0;

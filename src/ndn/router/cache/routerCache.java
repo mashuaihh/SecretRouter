@@ -53,7 +53,7 @@ public class routerCache {
 			return true;
 		}
 		else{
-			scheduleLRU(rR1);
+//			scheduleLRU(rR1);
 		}
 		return false;
 	}
@@ -61,13 +61,16 @@ public class routerCache {
 	/**
 	 * LRU schedule
 	 */
-    public void scheduleLRU(routerResource rR1){
+    public void scheduleLRU(routerResource rR1, routerNode node){
     	int iSize = rR1.getSize();
     	if(iSize > cachesize)return; // too large to store
     	
     	// kick out old cached resources until there's enough space
     	while(!Llist.isEmpty()&&(remainingCacheSize < iSize)){
     		routerResource trR = Llist.removeLast();
+    		System.out.println();
+    		System.out.println("Cache: " + node.getid());
+    		System.out.println("Removing " + trR.getID());
     		remainingCacheSize = remainingCacheSize + trR.getSize();
     	}
     	Llist.addFirst(rR1);    // First use, First out
@@ -143,6 +146,10 @@ public class routerCache {
 	 */
 	public LinkedList<routerResource> getResource(){
 		return rResource;
+	}
+	
+	public void removeResource(routerResource resource) {
+		this.Llist.remove(resource);
 	}
 	
 	/**

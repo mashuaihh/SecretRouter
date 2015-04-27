@@ -1,6 +1,7 @@
 package ndn.router.cache;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class Node {
 
@@ -10,6 +11,7 @@ public class Node {
 	private static ArrayList<Node> Nlist = new ArrayList<Node>();
 	private boolean init = false;
 	
+
 	public Node() {
 		this.id = Node.vertexNum;
 		Node.Nlist.add(Node.vertexNum, this);

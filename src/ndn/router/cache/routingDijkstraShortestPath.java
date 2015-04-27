@@ -4,6 +4,8 @@
 package ndn.router.cache;
 
 import ndn.router.newalgo.Lcd;
+import ndn.router.newalgo.Mcd;
+import ndn.router.newalgo.NewAlgo;
 
 import org.apache.commons.collections15.Transformer;
 
@@ -67,10 +69,14 @@ public class routingDijkstraShortestPath {
 		routerNode serverNode = se.getResourceNode();
 		List<routerNode> vlist = getPathVertexList(requestNode, serverNode);
 		
-		Lcd lcd = new Lcd(se, vlist, this.rMap);
-		lcd.routing();
-		lcd.showPath();
-		lcd.stat();
+//		Lcd lcd = new Lcd(se, vlist, this.rMap);
+//		lcd.routing();
+//		lcd.showPath();
+//		lcd.stat();
+		
+		Mcd mcd = new Mcd(se, vlist, this.rMap);
+		mcd.routing();
+		
 	}
 	
 	

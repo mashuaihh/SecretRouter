@@ -225,8 +225,10 @@ public class DistributionRequestSequence {
 	    	 * set request node and server cannot be request node
 	    	 */
 	    	routerNode requestNode = null;
-	    	do {
+	    	routerCache requestCache = null;
+			do {
 	    		requestNode = rTable.get(routerRandom.nextInt(rTablesize));
+	    		requestCache = this.rMap.get(requestNode);
 	    	} while(requestNode.getid() == 0);
 	    	
 	    	
