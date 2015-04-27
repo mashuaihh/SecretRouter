@@ -3,6 +3,7 @@
  */
 package ndn.router.cache;
 
+import ndn.router.newalgo.Cls;
 import ndn.router.newalgo.Lcd;
 import ndn.router.newalgo.Mcd;
 import ndn.router.newalgo.NewAlgo;
@@ -74,8 +75,8 @@ public class routingDijkstraShortestPath {
 //		lcd.showPath();
 //		lcd.stat();
 		
-		Mcd mcd = new Mcd(se, vlist, this.rMap);
-		mcd.routing();
+		Cls cls = new Cls(se, vlist, this.rMap);
+		cls.routing();
 		
 	}
 	

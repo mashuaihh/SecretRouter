@@ -10,7 +10,7 @@ import ndn.router.cache.*;
 
 public class NewAlgo {
 	public routerResource rResource;
-	private List<routerNode> vlist;
+	public List<routerNode> vlist;
 	private simulationEvent se;
 	private Map<routerNode, routerCache> rMap;
 	public List<routerNode> realList = new ArrayList<routerNode>();
