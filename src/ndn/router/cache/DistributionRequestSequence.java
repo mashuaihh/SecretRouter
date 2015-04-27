@@ -219,7 +219,8 @@ public class DistributionRequestSequence {
 	    	double pp = reRandom.nextDouble();
 			int index = 0;  
 			while(pp > requestFrequency[index]) index++; // so index is a picked random number
-	    	routerResource rR = rQueue[index];
+	    	//routerResource rR = rQueue[index];
+			routerResource rR = rQueue[4];
 	    	
 	    	/**
 	    	 * set request node and server cannot be request node

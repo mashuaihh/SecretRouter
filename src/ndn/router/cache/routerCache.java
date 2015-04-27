@@ -68,12 +68,13 @@ public class routerCache {
     	// kick out old cached resources until there's enough space
     	while(!Llist.isEmpty()&&(remainingCacheSize < iSize)){
     		routerResource trR = Llist.removeLast();
+    		this.outResourceList.add(trR);
     		System.out.println();
-    		System.out.println("Cache: " + node.getid());
-    		System.out.println("Removing " + trR.getID());
+    		System.out.println("Cache: " + node.getid() + ", ");
+    		System.out.print("Removing resource " + trR.getID());
     		remainingCacheSize = remainingCacheSize + trR.getSize();
     	}
-    	Llist.addFirst(rR1);    // First use, First out
+    	Llist.addFirst(rR1); 
     	remainingCacheSize = remainingCacheSize - rR1.getSize();
     }
 	
@@ -173,6 +174,25 @@ public class routerCache {
 	public boolean isServer() {
 		return this.isServer;
 	}
+	
+	/**
+	 * The resources that are flushed out because of the 
+	 * newly cached resources
+	 * @author Mashuai
+	 */
+	public void removeOutResource(routerResource se) {
+		this.outResourceList.remove(se);
+	}
+	
+	public boolean isOutResourceListEmpty() {
+		return this.outResourceList.isEmpty();
+	}
+
+	public List<routerResource> getOutResourceList() {
+		return this.outResourceList;
+	}
+
+	private List<routerResource> outResourceList = new ArrayList<routerResource>(); //store the flushed out resources.
 	
 	private int cachesize = 0;              // average resource size:store 10 ones on average
 	private int routerstrategy = 0;         // router strategy 0-LRU

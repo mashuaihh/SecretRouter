@@ -21,8 +21,18 @@ public class routerTuple {
 		return this.valid;
 	}
 	
+	public void deleteTuple() {
+		this.valid = false;
+		this.InNode = null;
+		this.OutNodes.clear();
+	}
+	
 	public void setInNode(routerNode node) {
 		this.InNode = node;
+	}
+	
+	public routerNode getInNode() {
+		return this.InNode;
 	}
 
 	public void addOutNodes(routerNode node) {
@@ -31,5 +41,9 @@ public class routerTuple {
 	
 	public void removeOutNode(routerNode node) {
 		this.OutNodes.remove(node);
+	}
+	
+	public List<routerNode> getOutNodes() {
+		return this.OutNodes;
 	}
 }

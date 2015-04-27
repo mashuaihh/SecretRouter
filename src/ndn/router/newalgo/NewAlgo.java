@@ -25,8 +25,7 @@ public class NewAlgo {
 		this.vlist = vlist;
 	}
 	
-	public void showPath() {
-		out.println();
+	public void showPath() { out.println();
 		out.println("Requesting resource " + this.rResource.getID());
 		out.print("Path to Server: ");
 		for (int i = 0; i < vlist.size(); i++) {
@@ -72,6 +71,24 @@ public class NewAlgo {
 			out.println("lower node: " + vlist.get(idx - 1));
 			return vlist.get(idx - 1);
 		}
+	}
+	
+	public routerNode getUpperNode(routerNode node) {
+		if (node.getid() == 0) {
+			return node;
+		} else {
+			int idx = vlist.indexOf(node);
+			return vlist.get(idx + 1);
+		}
+	}
+	
+	public routerNode getServer() {
+		routerNode node = null;
+		for (routerNode e : vlist) {
+			if (e.getid() == 0)
+				node = e;
+		}
+		return node;
 	}
 	
 	public routerCache getCache(routerNode node) {
