@@ -33,20 +33,18 @@ public class Cls extends NewAlgo {
 			routerNode downNode = super.getLowerNode(serverNode);
 			realList = vlist;
 			printPath();
-			routerTuple downTuple = downNode.getTuple(rResource);
-			downTuple.isValid();
-			downTuple.setInNode(null);
-			//caching
+			caching(serverNode, downNode);
 
 		} else {
 			//Tuple is found on the way to server
+			//First node in vlist is the firstTupleNode
 			routerNode firstNode = vlist.get(0);
 
 			if (firstNode == firstTupleNode) {
 				//The fisrt firstTupleNode contains the tuple
 				//Need to cache? No
-				routerNode destiNode = findEndOfTrail(firstNode);
-				if (!(realList.size() > vlist.size())) {
+				findEndOfTrail(firstNode);
+				if (realList.size() > vlist.size()) {
 					realList = vlist;
 				}
 				printPath();
@@ -56,6 +54,7 @@ public class Cls extends NewAlgo {
 				//Tuple is found on half way to server.
 				//Need to cache? Yes
 				
+				routerNode downNode = super.getLowerNode(firstTupleNode);
 				//for showing path, ie making the realList
 				for (int i = 0; i < vlist.size() - 1; i++) {
 					//changing the realList
@@ -67,15 +66,14 @@ public class Cls extends NewAlgo {
 					} 
 				}
 				//findEndOfTrail changes the realList
-				routerNode destiNode = findEndOfTrail(firstTupleNode);
-				routerNode beforeTuple = super.getLowerNode(firstTupleNode);
-				if (!(realList.size() > vlist.size())) {
+				findEndOfTrail(firstTupleNode);
+				if (realList.size() > vlist.size()) {
 					realList = vlist;
 				}
 				printPath();
 				
 				//for caching
-
+				caching(firstTupleNode, downNode);
 			}
 		}
 
@@ -103,27 +101,41 @@ public class Cls extends NewAlgo {
 	}
 	
 	private void caching(routerNode firstTupleNode, routerNode downNode) {
-		routerCache cache = super.getCache(firstTupleNode);
+		routerCache firstCache = super.getCache(firstTupleNode);
 		routerCache downCache = super.getCache(downNode);
 		
 		routerTuple firstTuple = firstTupleNode.getTuple(rResource);
+		routerTuple downTuple = downNode.getTuple(rResource);
 		
-		if (!cache.isServer()) {
+		if (!firstCache.isServer()) {
+			//init downTuple
+			downTuple.setValid();
+			downTuple.setInNode(firstTupleNode);
+			//cache resource
+			downCache.scheduleLRU(rResource, downNode);
+			
 			// if size == 0, then the firstTupleNode contains the cache.
 			if (firstTuple.getOutNodes().size() == 0) {
-				cache.removeResource(rResource);
-				downCache.putResource(rResource);
+				firstCache.removeResource(rResource);
 			} else {
-				//firstTuple has branch out. And the cache is found there.
-				downCache.putResource(rResource);
+				//firstTuple has branch out. And the cache is found out there.
+				//firstTupleNode has no cache 
 			}
-			cache.removeResource(rResource);
-			downCache.putResource(rResource);
+
+			//add out nodes
+			firstTuple.addOutNodes(downNode);
+
+		} else {
+			//firstTupleNode is server
+			downTuple.setInNode(null);
+			downTuple.setValid();
+			//caching
+			downCache.scheduleLRU(rResource, downNode);
 		}
-		processOutResources(downNode);
+		processRemovedResources(downNode);
 	}
 	
-	private routerNode processOutResources(routerNode node) {
+	private routerNode processRemovedResources(routerNode node) {
 		routerCache cache = super.getCache(node);
 		if (cache.isServer() || cache.isOutResourceListEmpty()) {
 			return null;
@@ -137,7 +149,7 @@ public class Cls extends NewAlgo {
 				upCache.scheduleLRU(e, upNode);
 				cache.removeOutResource(e);
 			}
-			return processOutResources(upNode);
+			return processRemovedResources(upNode); 
 		}
 	}
 	
@@ -215,15 +227,19 @@ public class Cls extends NewAlgo {
 	
 	public String makeString(routerNode node) {
 		routerTuple tuple = node.getTuple(rResource);
+		routerCache cache = super.getCache(node);
+		if (cache.isServer()) {
+			return "Server";
+		}
 		if (!tuple.isValid()) {
 			return "INVALID";
-		}
+		}  
 		List<routerNode> li = tuple.getOutNodes();
 		routerNode InNode = tuple.getInNode();
 		int hop = node.getHop();
 		String list = "[";
 		if (li.size() == 0) {
-			list = "null";
+			list = "[]";
 		} else {
 		for (int i = 0; i < li.size(); i++) {
 			routerNode each = li.get(i);
@@ -234,7 +250,8 @@ public class Cls extends NewAlgo {
 			}
 		}
 		}
-		String end = "(" + list + ", " + InNode + ", " + hop + ")";
+		String end = "(" + InNode + ", " + list + ", " + hop + ")" 
+		+ " " + cache.hasResource(rResource);
 		return end;
 	}
 	
