@@ -4,7 +4,9 @@
 package ndn.router.cache;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * @author Administrator
@@ -45,17 +47,22 @@ public class routerNode {
 	/**
 	 * for CLS implementation
 	 */
-	private List<routerTuple> tupleList = new ArrayList<routerTuple>();
+	private Map<routerResource, routerTuple> tupleMap = new HashMap<routerResource, routerTuple>();
 	
-	public List<routerTuple> getTupleList() {
-		return this.tupleList;
+	public Map<routerResource, routerTuple> getTupleMap() {
+		return this.tupleMap;
 	}
 	
+	public routerTuple getTuple(routerResource se) {
+		routerTuple tuple = this.tupleMap.get(se);
+		return tuple;
+	}
+				
 	public void addInTupleList(routerResource[] resourceList) {
 		for (int i = 0; i < resourceList.length; i++) {
 			routerResource resource = resourceList[i];
 			routerTuple tuple = new routerTuple(resource);
-			this.tupleList.add(tuple);
+			this.tupleMap.put(resource, tuple);
 		}
 	}
 }
