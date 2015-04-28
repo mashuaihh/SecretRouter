@@ -77,6 +77,7 @@ public class routingDijkstraShortestPath {
 		
 		Cls cls = new Cls(se, vlist, this.rMap);
 		cls.routing();
+		cls.stat();
 		
 	}
 	

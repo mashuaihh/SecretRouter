@@ -22,6 +22,7 @@ public class Cls extends NewAlgo {
 	
 	public Cls(simulationEvent se, List<routerNode> vlist, Map<routerNode, routerCache> rMap) {
 		super(se, vlist, rMap);
+		super.addRequestNum();
 	}
 	
 	public void routing() {
@@ -49,6 +50,7 @@ public class Cls extends NewAlgo {
 					realList = vlist;
 				}
 				printPath();
+					super.addHitNum();
 
 			} else {
 				//Not the first firstTupleNode in vlist contains the tuple.
@@ -73,6 +75,7 @@ public class Cls extends NewAlgo {
 				}
 				printPath();
 				
+					super.addHitNum();
 				//for caching
 				caching(firstTupleNode, downNode);
 			}
