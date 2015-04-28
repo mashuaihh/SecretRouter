@@ -32,7 +32,7 @@ public class GraphTopologyRandom {
     public GraphTopologyRandom(){
     	if(routerMain.iswitch == 0){
     	    rgraph = new ErdosRenyiGenerator<routerNode, routerLink>(
-    		    	new GraphFactory(), new VertexFactory(), new EdgeFactory(),routerMain.vertexNum, 6.0/(routerMain.vertexNum -1)).create();// average degree 6.
+    		    	new GraphFactory(), new VertexFactory(), new EdgeFactory(),routerMain.vertexNum, 4.0/(routerMain.vertexNum -1)).create();// average degree 6.
     	    
     	    // delete vertices whose degrees are zero
     		Set<routerNode> removeMe = new HashSet<routerNode>();
@@ -58,7 +58,7 @@ public class GraphTopologyRandom {
                 // output vertices
                 graphout.println("" + vlist.size() + " vertices");
                 for(int i=0; i<vlist.size(); i++){
-                	graphout.println(vlist.get(i).toString() 
+                	graphout.println((vlist.get(i).getid()-1) 
                 			               + "," + "*");
                 }
                 
@@ -66,8 +66,8 @@ public class GraphTopologyRandom {
                 graphout.println("" + elist.size() + " edges");
                 for(int i=0; i<elist.size(); i++){
             	    Pair<routerNode> pEndPoints = rgraph.getEndpoints(elist.get(i));
-                	graphout.println(pEndPoints.getFirst().toString() 
-                			               + "," + pEndPoints.getSecond().toString());
+                	graphout.println((pEndPoints.getFirst().getid()-1)
+                			               + "," + (pEndPoints.getSecond().getid()-1));
                 }
                 System.out.println("ER average degree:" + elist.size()*2.0/vlist.size());
                 graphout.close();

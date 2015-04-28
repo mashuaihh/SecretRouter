@@ -61,9 +61,10 @@ public class routerCache {
 	/**
 	 * LRU schedule
 	 */
-    public void scheduleLRU(routerResource rR1, routerNode node){
+    public boolean scheduleLRU(routerResource rR1, routerNode node){
     	int iSize = rR1.getSize();
-    	if(iSize > cachesize)return; // too large to store
+    	if(iSize > cachesize)
+    		return false; // too large to store
     	
     	// kick out old cached resources until there's enough space
     	while(!Llist.isEmpty()&&(remainingCacheSize < iSize)){
@@ -76,6 +77,7 @@ public class routerCache {
     	}
     	Llist.addFirst(rR1); 
     	remainingCacheSize = remainingCacheSize - rR1.getSize();
+    	return true;
     }
 	
 	/**

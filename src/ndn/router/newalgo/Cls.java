@@ -112,31 +112,33 @@ public class Cls extends NewAlgo {
 		routerTuple downTuple = downNode.getTuple(rResource);
 		
 		if (!firstCache.isServer()) {
-			//init downTuple
-			downTuple.setValid();
-			downTuple.setInNode(firstTupleNode);
-			//cache resource
-			downCache.scheduleLRU(rResource, downNode);
-			
-			// if size == 0, then the firstTupleNode contains the cache.
-			if (firstTuple.getOutNodes().size() == 0) {
-				firstCache.removeResource(rResource);
-			} else {
-				//firstTuple has branch out. And the cache is found out there.
-				//firstTupleNode has no cache 
+			//if caching succeeds
+			if (downCache.scheduleLRU(rResource, downNode)) {
+				//init downTuple
+				downTuple.setValid();
+				downTuple.setInNode(firstTupleNode);
+				//cache resource
+				// if size == 0, then the firstTupleNode contains the cache.
+				if (firstTuple.getOutNodes().size() == 0) {
+					firstCache.removeResource(rResource);
+				} else {
+					//firstTuple has branch out. And the cache is found out there.
+					//firstTupleNode has no cache 
+				}
+
+				//add out nodes
+				firstTuple.addOutNodes(downNode);
 			}
 
-			//add out nodes
-			firstTuple.addOutNodes(downNode);
-
 		} else {
-			//firstTupleNode is server
-			downTuple.setInNode(null);
-			downTuple.setValid();
-			//caching
-			downCache.scheduleLRU(rResource, downNode);
+
+			if (downCache.scheduleLRU(rResource, downNode)) {
+				//firstTupleNode is server
+				downTuple.setInNode(null);
+				downTuple.setValid();
+			}
+			processRemovedResources(downNode);
 		}
-		processRemovedResources(downNode);
 	}
 	
 	private routerNode processRemovedResources(routerNode node) {
@@ -146,8 +148,13 @@ public class Cls extends NewAlgo {
 		} else {
 			routerNode upNode = super.getUpperNode(node);
 			routerCache upCache = super.getCache(upNode);
+			//if upNode's outList has multiple nodes, then just delete the cache
+			//in the node cache, and delete the corresponding out node in the 
+			//upNode's outList.
 			List<routerResource> resList = cache.getOutResourceList();
 			List<routerResource> tempList = new ArrayList<routerResource>();
+			printOut(resList, node);
+			//copy the list
 			for (int i = 0; i < resList.size(); i++) {
 				routerResource res = resList.get(i);
 				tempList.add(res);
@@ -155,11 +162,41 @@ public class Cls extends NewAlgo {
 			for (routerResource e : tempList) {
 				routerTuple deletedTuple = node.getTuple(e);
 				deletedTuple.deleteTuple();
-				upCache.scheduleLRU(e, upNode);
-				cache.removeOutResource(e);
+			//if upNode's outList has multiple nodes, then just delete the cache
+			//in the node cache, and delete the corresponding out node in the 
+			//upNode's outList.
+				routerTuple upTuple = upNode.getTuple(e);
+				List<routerNode> outList = upTuple.getOutNodes();
+				if (outList.size() > 1) {
+					outList.remove(node);
+					break;
+				}
+				if (upCache.scheduleLRU(e, upNode))
+					cache.removeOutResource(e);
 			}
 			return processRemovedResources(upNode); 
 		}
+	}
+
+	private void printOut(List<routerResource> eList, routerNode node) {
+		File file = new File("c:\\clsResult.txt");
+		PrintWriter fileOut = null;
+
+		try {
+			fileOut = new PrintWriter(new BufferedWriter(new FileWriter(file, true)));
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		fileOut.print(node.getid() + " is removing ");
+		for (routerResource ss : eList) {
+			fileOut.print(ss.getID() + ", ");
+		}
+
+		fileOut.println();
+		fileOut.println();
+		fileOut.println("---------------------------");
+		fileOut.close();
 	}
 	
 	private void printPath() {

@@ -14,11 +14,11 @@ public class routerMain {
     public static final int powerlawGenerator = 0;  // generating powerlaw sequence 0-new 1-load
     
     public static final int iswitch2 = 0; // for generating resource request// 0-create request 1-load request
-    public static final int vertexNum = 10;
+    public static final int vertexNum = 20;
   
     
     // some constants
-    public static final int resourceNum = 10;  // default 4 6 8 1000
+    public static final int resourceNum = 50;  // default 4 6 8 1000
     public static  double EFRThreshold = 0.00157964;  // this is actually set in class DistributionRequestSequence
     public static final double CacheThreshold = 1.0;    // 0.5 0.1
     public static final int routerCacheSizedenominator = 10; // default= resourceNum/10
@@ -94,7 +94,7 @@ public class routerMain {
 	 	//simulationEvent se = sQueue.getEvent();
 		int etype;
 		simulationEvent se;
-		long sTimes = 400;
+		long sTimes = 5000;
 		while(sTimes > 0){
 			sTimes--;
 			se = drs.eventgenerate();
