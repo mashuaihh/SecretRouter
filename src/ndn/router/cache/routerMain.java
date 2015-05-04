@@ -5,7 +5,14 @@ package ndn.router.cache;
  * 1. request node finds cache in its own cache, then how to calculate the hit rate?
  */
 
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.PrintWriter;
+
 import javax.swing.JFrame;
+
 import edu.uci.ics.jung.graph.Graph;
 
 public class routerMain {
@@ -14,87 +21,63 @@ public class routerMain {
     public static final int powerlawGenerator = 0;  // generating powerlaw sequence 0-new 1-load
     
     public static final int iswitch2 = 0; // for generating resource request// 0-create request 1-load request
-    public static final int vertexNum = 20;
+    public static final int vertexNum = 100;
   
     
     // some constants
-    public static final int resourceNum = 50;  // default 4 6 8 1000
+    public static final int resourceNum = 1000;  // default 4 6 8 1000
     public static  double EFRThreshold = 0.00157964;  // this is actually set in class DistributionRequestSequence
     public static final double CacheThreshold = 1.0;    // 0.5 0.1
-    public static final int routerCacheSizedenominator = 10; // default= resourceNum/10
+    //public static final double routerCacheSizedenominator = 10; // default= resourceNum/10
+    //public static final double routerCacheSizedenominator = 5; // default= resourceNum/10
+    //public static final double routerCacheSizedenominator = 3.3; // default= resourceNum/10
+    //public static final double routerCacheSizedenominator = 2.5; // default= resourceNum/10
+    private double routerCacheSizedenominator = 2; // default= resourceNum/10
+    private double aa = -0.3;
+    private String algoType = "lcd";
+    public double HitRate = 0;
 
+    public routerMain() {
+    	
+    }
+    
+    public void setAlgoType(String str) {
+    	this.algoType = str;
+    }
+    
+    public void setCacheSizeDenominator(double num) {
+    	this.routerCacheSizedenominator = num;
+    }
+    
+    public void setAA(double aa) {
+    	this.aa = aa;
+    }
 
-	/**
-	 * main method
-	 */
-	public static void main(String[] args) {
-		//Graph<routerNode, routerLink> g = new GraphTopologyRandom().getGraph();
-		
-		//System.out.println(g.toString());
-	
-		// generate a random graph
+    public void mainPiece() {
 		Graph<routerNode, routerLink> graphRandom = new GraphTopologyRandom().getGraph();
         System.out.println("random graph is created");
-		
-		// generate a BA graph
-		//Graph<routerNode, routerLink> graphRandom = new GraphTopologyBA().getGraph();
-        //System.out.println("BA graph is created");
 
-
-		
-		// generate router cache
 		routerCacheManager rCacheManager = new routerCacheManager(graphRandom);
         System.out.println("node cache is assigned");
-		
-		
-		// generate resource distribution
-		DistributionResource resDistribution = new DistributionResource(rCacheManager);
+
+		DistributionResource resDistribution = new DistributionResource(rCacheManager, this.routerCacheSizedenominator);
         System.out.println("resource is assigned");
-	
-		
-        // visualize the graph
-        JFrame jf = new routerVisulization(graphRandom, resDistribution);
-		jf.pack();
-		jf.setVisible(true);
-       System.out.println("graph is shown");
-		// generate event simulation 
-		//simulationQueue sQueue = new simulationQueue();
-        //System.out.println("simulation queue is created");
-		
-		// create request distribution generator
+        
+//        JFrame jf = new routerVisulization(graphRandom, resDistribution);
+//		jf.pack();
+//		jf.setVisible(true);
+
         DistributionRequestSequence drs = new DistributionRequestSequence(resDistribution);
-        
         // generate powerlaw accees frequency
-        drs.powlawGenerate();
-
-//        // EFR routing
-//        routingEFRPath rEFRP = new routingEFRPath(resDistribution);
-//		JFrame jf2 = new routerVisulization(rEFRP.getTransfromedgraph(), resDistribution);
-//		jf2.pack();
-//		jf2.setVisible(true);
-//        System.out.println("graph2 is shown"); 
-        
-       // rEFRP.TestshortestPath();
-   /*     
-       // test the routing path
-        TestroutingEFRPath rEFRP = new TestroutingEFRPath(resDistribution);
-		JFrame jf2 = new routerVisulization(rEFRP.getTransfromedgraph());
-		jf2.pack();
-		jf2.setVisible(true);
-        System.out.println("graph2 is shown");  
-        rEFRP.TestEFRshortestPath();
-      */   
-        
-        //routingEFRPath rDSP = new routingEFRPath(resDistribution);
-        
+        drs.powlawGenerate(this.aa);
         // generate router
-       routingDijkstraShortestPath rDSP = new routingDijkstraShortestPath(resDistribution);
-		// start simulation
 
+       routingDijkstraShortestPath rDSP = new routingDijkstraShortestPath(resDistribution, this.algoType);
+		// start simulation
 	 	//simulationEvent se = sQueue.getEvent();
 		int etype;
 		simulationEvent se;
-		long sTimes = 5000;
+		long sTimes = 10000;
 		while(sTimes > 0){
 			sTimes--;
 			se = drs.eventgenerate();
@@ -106,33 +89,63 @@ public class routerMain {
 			// 1 - 
 			switch(etype){
 			case 0:
-				
 				rDSP.routing(se);      	
-				
 				break;
-				
-		
-			
 			case 1:
-				
-				
 				break;
-				
 			case 2:
-				
 				break;
-				
 			default:
 				break;	
 			}
-			
-			
 			//se = sQueue.getEvent();
 		}
+		this.HitRate = rDSP.getHitRate();
 		
         // close file		
 		drs.closefile();
-		System.out.println("************************The End.****************************");
+    }
+    
+    public void printResult() {
+    	File file = new File("c:\\HitResult");
+    	PrintWriter fileOut = null;
+
+		try {
+			fileOut = new PrintWriter(new BufferedWriter(new FileWriter(file, true)));
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		fileOut.println("aa : " + this.aa + " denomin: " + this.routerCacheSizedenominator
+				+ " Algorithm: " + this.algoType);
+		fileOut.println("Hit rate: " + this.HitRate);
+		fileOut.println();
+		fileOut.println("----------------------------------------------------");
+		fileOut.close();
+    }
+
+	/**
+	 * 
+	 * main method
+	 */
+	public static void main(String[] args) {
+		double[] denomin = {0.1, 0.2, 0.3, 0.4, 0.5};
+		double[] aa = {-0.3, -0.9};
+		String[] algo = {"lcd", "ccn", "cls"};
+		
+		for (double each_aa : aa) {
+			for (double de : denomin) {
+				for (String al : algo) {
+					routerMain main = new routerMain();
+					main.setAA(each_aa);
+					main.setCacheSizeDenominator(de);
+					main.setAlgoType(al);
+					main.mainPiece();
+					main.printResult();
+				}
+			}
+		}
 	}
 
 }

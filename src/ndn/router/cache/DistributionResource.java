@@ -30,7 +30,7 @@ public class DistributionResource {
 	/**
 	 * 
 	 */
-	public DistributionResource(routerCacheManager rCM) {
+	public DistributionResource(routerCacheManager rCM, double denominator) {
 		this.rCM = rCM;
 		// get the Cache Manager table. this is not a good access pattern
 		this.rMap = rCM.getrouterTable();
@@ -234,7 +234,8 @@ public class DistributionResource {
   		for(int i = 0;i < rsize; i++){
   			totalResourceSize += rQueue[i].getSize();
     	}
-  		totalResourceSize = totalResourceSize/routerMain.routerCacheSizedenominator; // 10% of all the total size
+  		totalResourceSize = (long) (totalResourceSize*denominator); // 10% of all the total size
+  		totalResourceSize = totalResourceSize / this.gGraph.getVertexCount();
   		
   		// set cache size
     	for (routerNode v : Collections.unmodifiableCollection(rMap.keySet())) {
@@ -317,6 +318,9 @@ public class DistributionResource {
     	return gGraph;
     }	
 	
+    public void setCacheDenominator(double a ) {
+    	this.cacheDenominator = a;
+    }
 	private Graph<routerNode, routerLink> gGraph;
     private routerResource[] rQueue;  // queue for all resources
     private int rsize;                // resource queue size
@@ -324,4 +328,6 @@ public class DistributionResource {
     private String filename = "C:/VertexResourceInfo.txt";  // info. file             
     private Map<routerNode, routerCache> rMap;
     private routerCacheManager rCM;
+    private double cacheDenominator = 10;
+
 }

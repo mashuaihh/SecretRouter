@@ -3,6 +3,7 @@
  */
 package ndn.router.cache;
 
+import ndn.router.newalgo.Ccn;
 import ndn.router.newalgo.Cls;
 import ndn.router.newalgo.Lcd;
 import ndn.router.newalgo.Mcd;
@@ -32,10 +33,11 @@ public class routingDijkstraShortestPath {
 	/**
 	 * 
 	 */
-	public routingDijkstraShortestPath(DistributionResource resDistribution) {
+	public routingDijkstraShortestPath(DistributionResource resDistribution, String algotype) {
         this.DResource =  resDistribution;
         this.gGraph = resDistribution.getgraph();
         this.rMap = resDistribution.getrouterTable();
+        this.algoType = algotype;
         
         // create transformer class for getting graph edge weight
 		wtTransformer = new Transformer<routerLink, Integer>() {
@@ -62,22 +64,39 @@ public class routingDijkstraShortestPath {
 		// compute the frequency of the requested resource 
 		routerResource rResource = se.getrouterResource();
 		rResource.addFrequence(1);
-		
 		/**
 		 * get vlist: requestNode -> ... -> serverNode
 		 */
 		routerNode requestNode = se.getEventNode();
 		routerNode serverNode = se.getResourceNode();
 		List<routerNode> vlist = getPathVertexList(requestNode, serverNode);
+
+
+		if (algoType.equals("lcd")) {
+			Lcd algo = new Lcd(se, vlist, this.rMap);
+			algo.routing();
+			algo.showPath();
+			algo.stat();
+			this.HitRate = algo.getHitRate();
+		} else if (algoType.equals("cls")) {
+			Cls algo = new Cls(se, vlist, this.rMap);
+			algo.routing();
+			algo.showPath();
+			algo.stat();
+			this.HitRate = algo.getHitRate();
+		} else if (algoType.equals("ccn")) {
+			Ccn algo = new Ccn(se, vlist, this.rMap);
+			algo.routing();
+			algo.showPath();
+			algo.stat();
+			this.HitRate = algo.getHitRate();
+		}
+		
 		
 //		Lcd lcd = new Lcd(se, vlist, this.rMap);
 //		lcd.routing();
 //		lcd.showPath();
 //		lcd.stat();
-		
-		Cls cls = new Cls(se, vlist, this.rMap);
-		cls.routing();
-		cls.stat();
 		
 	}
 	
@@ -107,6 +126,14 @@ public class routingDijkstraShortestPath {
 	    return vlist;
 	}
 	
+	public void setAlgoType(String str) {
+		this.algoType = str;
+	}
+	
+	public double getHitRate() {
+		return this.HitRate;
+	}
+	
     private Map<routerNode, routerCache> rMap;
 	private Graph<routerNode, routerLink> gGraph;
 	private DistributionResource DResource;
@@ -120,4 +147,6 @@ public class routingDijkstraShortestPath {
 	private BigDecimal pinoCache = BigDecimal.valueOf(0.1); // path length in no cache condition
 	private BigDecimal piCache = BigDecimal.valueOf(0.1);   // path length in cache condition
 	private BigDecimal prateStatistic;                    // iCache/inoCache
+	private String algoType = "lcd";
+	private double HitRate = 0;
 }

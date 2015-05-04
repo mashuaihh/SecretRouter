@@ -57,12 +57,12 @@ public class DistributionRequestSequence {
 	/**
 	 * generate power law
 	 */
-	public void powlawGenerate(){
+	public void powlawGenerate(double aa){
+		//a = -0.3 -0.9
 		int Kmin = 5;
 		int Kmax = 100;
 		double[] df = new double[Kmax - Kmin + 2];
 		int acceessfrequence[] = new int[routerMain.resourceNum]; 
-		double aa = -2;
 		
 		
 		// calculate access frequence
@@ -219,11 +219,8 @@ public class DistributionRequestSequence {
 	    	double pp = reRandom.nextDouble();
 			int index = 0;  
 			while(pp > requestFrequency[index]) index++; // so index is a picked random number
-//	    	routerResource rR = rQueue[index];
+	    	routerResource rR = rQueue[index];
 
-			routerResource rR;
-			int luck = reRandom.nextInt(8);
-			rR = rQueue[luck];
 	    	
 	    	/**
 	    	 * set request node and server cannot be request node
