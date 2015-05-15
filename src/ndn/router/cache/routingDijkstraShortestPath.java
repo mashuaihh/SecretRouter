@@ -5,6 +5,7 @@ package ndn.router.cache;
 
 import ndn.router.newalgo.Ccn;
 import ndn.router.newalgo.Cls;
+import ndn.router.newalgo.ClsPlus;
 import ndn.router.newalgo.Lcd;
 import ndn.router.newalgo.Mcd;
 import ndn.router.newalgo.NewAlgo;
@@ -86,6 +87,12 @@ public class routingDijkstraShortestPath {
 			this.HitRate = algo.getHitRate();
 		} else if (algoType.equals("ccn")) {
 			Ccn algo = new Ccn(se, vlist, this.rMap);
+			algo.routing();
+			algo.showPath();
+			algo.stat();
+			this.HitRate = algo.getHitRate();
+		} else if (algoType.equals("cls+")) {
+			ClsPlus algo = new ClsPlus(se, vlist, this.rMap);
 			algo.routing();
 			algo.showPath();
 			algo.stat();

@@ -57,6 +57,15 @@ public class routerNode {
 		routerTuple tuple = this.tupleMap.get(se);
 		return tuple;
 	}
+	
+	public boolean hasValidTuple(routerResource se) {
+		routerTuple tuple = this.tupleMap.get(se);
+		if (tuple.isValid()) {
+			return true;
+		} else {
+			return false;
+		}
+	}
 				
 	public void addInTupleList(routerResource[] resourceList) {
 		for (int i = 0; i < resourceList.length; i++) {

@@ -80,7 +80,6 @@ public class Cls extends NewAlgo {
 				caching(firstTupleNode, downNode);
 			}
 		}
-
 	}
 	
 	/**
@@ -199,7 +198,7 @@ public class Cls extends NewAlgo {
 		fileOut.close();
 	}
 	
-	private void printPath() {
+	protected void printPath() {
 		File file = new File("c:\\clsResult.txt");
 		PrintWriter fileOut = null;
 

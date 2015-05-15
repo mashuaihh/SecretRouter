@@ -41,21 +41,22 @@ public class routerCache {
 	 * @return true this cache contains the resource, false this cache does not contain the resource.
 	 */
 	public boolean routing(simulationEvent se){
-		// determine whether to cache a resource 
-		
-		routerResource rR1 = se.getrouterResource();
+		routerResource resource = se.getrouterResource();
+
+		//add resource frequency
+		this.addResourceCount(resource);
+
 		// cache the resource 
-		if(Llist.contains(rR1)){  // the cahce contains the resource?
-			System.out.println("yes " + rR1.getID());
+		if(Llist.contains(resource)){  // the cahce contains the resource?
+			System.out.println("yes " + resource.getID());
 		    // rearrange the list
-			Llist.remove(rR1);
-			Llist.addFirst(rR1);
+			Llist.remove(resource);
+			Llist.addFirst(resource);
 			return true;
 		}
 		else{
-//			scheduleLRU(rR1);
+			return false;
 		}
-		return false;
 	}
 
 	/**
@@ -71,8 +72,8 @@ public class routerCache {
     		routerResource trR = Llist.removeLast();
     		this.outResourceList.add(trR);
     		System.out.println();
-    		System.out.println("Cache: " + node.getid() + ", ");
-    		System.out.print("Removing resource " + trR.getID());
+//    		System.out.println("Cache: " + node.getid() + ", ");
+    		System.out.println("Removing resource " + trR.getID());
     		remainingCacheSize = remainingCacheSize + trR.getSize();
     	}
     	Llist.addFirst(rR1); 
@@ -141,7 +142,7 @@ public class routerCache {
 	}
 	
 	public boolean hasResource(routerResource resource) {
-		return Llist.contains(resource)||this.isServer;
+		return rResource.contains(resource)|| Llist.contains(resource)||this.isServer;
 	}
 	
 	/**
@@ -161,13 +162,6 @@ public class routerCache {
 	public int getRemainingcachesize(){
 		return remainingCacheSize;
 	}
-	/*
-	private class resourceUseInfo{
-
-        private int useFrequency = 0;
-        private routerResource rR;  // point to the resource		
-	}
-	*/
 	
 	public void setServer() {
 		this.isServer = true;
@@ -193,6 +187,25 @@ public class routerCache {
 	public List<routerResource> getOutResourceList() {
 		return this.outResourceList;
 	}
+	
+	public void addResourceCount(routerResource res) {
+		if (this.resCounter.containsKey(res)) {
+			Integer idx = this.resCounter.get(res);
+			this.resCounter.remove(res);
+			this.resCounter.put(res, idx+1);
+		} else {
+			this.resCounter.put(res, 1);
+		}
+	}
+	
+	public Integer getResourceCount(routerResource res) {
+		if (this.resCounter.containsKey(res)) {
+			Integer idx = this.resCounter.get(res);
+			return idx;
+		} else {
+			return 0;
+		}
+	}
 
 	private List<routerResource> outResourceList = new ArrayList<routerResource>(); //store the flushed out resources.
 	
@@ -204,5 +217,19 @@ public class routerCache {
     private Random mRandom;                // determine whether to cache 
     private long[] LFUAccessFrequece;       // store resource access frequence in this node
     private boolean isServer = false;
+    //for CLS++
+    private Map<routerResource, Integer> resCounter = new HashMap<routerResource, Integer>();
+    
+    public static void main(String[] args) {
+    	routerResource resource1 = new routerResource(1, 3);
+    	routerResource resource2 = new routerResource(2, 5);
+    	routerResource resource3 = new routerResource(3, 6);
+    	routerCache cache = new routerCache(7, 0);
+    	cache.scheduleLRU(resource2, null);
+    	cache.scheduleLRU(resource1, null);
+    	cache.scheduleLRU(resource3, null);
+    	System.out.println("Resource2 " + cache.getResourceCount(resource2));
+    	System.out.println("Resource1 " + cache.getResourceCount(resource1));
+    }
     
 }

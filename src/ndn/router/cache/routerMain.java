@@ -107,7 +107,7 @@ public class routerMain {
     }
     
     public void printResult() {
-    	File file = new File("c:\\HitResult");
+    	File file = new File("d:\\HitResult");
     	PrintWriter fileOut = null;
 
 		try {
@@ -132,7 +132,8 @@ public class routerMain {
 	public static void main(String[] args) {
 		double[] denomin = {0.1, 0.2, 0.3, 0.4, 0.5};
 		double[] aa = {-0.3, -0.9};
-		String[] algo = {"lcd", "ccn", "cls"};
+//		String[] algo = {"lcd", "ccn", "cls"};
+		String[] algo = {"cls+"};
 		
 		for (double each_aa : aa) {
 			for (double de : denomin) {

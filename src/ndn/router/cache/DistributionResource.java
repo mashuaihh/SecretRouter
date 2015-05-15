@@ -43,9 +43,7 @@ public class DistributionResource {
 		rCM.setresourceNum(rsize);
 
 		
-		// distribute the resources to router node
-		
-		// create resource
+		// distribute the resources to router node // create resource
     	if(routerMain.iswitch3 == 0){
             try{
                 PrintWriter graphout = new PrintWriter(new FileWriter(filename));
@@ -73,15 +71,15 @@ public class DistributionResource {
 	        		}
 	        	}
                 
-	        	for(int i=0;i<rsize; i++){
-	        		// distribute rQueue[i] to nodes
-	        		routerCache cache = rMap.get((routerNode)vlist.get(mRandom2.nextInt(rMap.size())));
-	        		if (!cache.isServer()) {
-	        			cache.putResource(rQueue[i]);
-	        		} else {
-	        			
-	        		}
-	        	}
+//	        	for(int i=0;i<rsize; i++){
+//	        		// distribute rQueue[i] to nodes
+//	        		routerCache cache = rMap.get((routerNode)vlist.get(mRandom2.nextInt(rMap.size())));
+//	        		if (!cache.isServer()) {
+//	        			cache.putResource(rQueue[i]);
+//	        		} else {
+//	        			
+//	        		}
+//	        	}
 	        	
 	        	
 	        	/**
