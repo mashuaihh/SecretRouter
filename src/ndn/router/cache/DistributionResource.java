@@ -113,6 +113,8 @@ public class DistributionResource {
 	        	 */
 	        	for (routerNode e : vlist) {
 	        		e.addInTupleList(rQueue);
+	        		routerCache each_cache = this.rMap.get(e);
+	        		each_cache.addInResourceCountList(rQueue);
 	        	}
 	        	
                 // output vertex-resource info

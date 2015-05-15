@@ -22,31 +22,99 @@ public class ClsPlus extends Cls {
 		routerNode firstNode = vlist.get(0);
 		//endNode may be tupleNode or Server
 		routerNode endNode = routeToSource(firstNode);
-		responseBack(endNode);
 		super.printPath();
+		responseBack(endNode);
 	}
 	
 	public void responseBack(routerNode node) {
 		routerCache cache = super.getCache(node);
-
+		//either case, server or tuple, pulling down must happen
+		//there is no tuple on the way
 		if (cache.isServer()) {
-			routerNode lowerNode = super.getLowerNode(node);
-			routerCache lowerCache = super.getCache(lowerNode);
-			routerTuple lowerTuple = lowerNode.getTuple(rResource);
-			lowerTuple.setValid();
-			lowerTuple.setInNode(node);
-			lowerCache.scheduleLRU(rResource, lowerNode);
+			serverPullDown(node);
 		} else {
-			pullDown();
+			//there is tuple, parameter node is the node with tuple(the last tuple)
+			tupleNodePullDown();
 		}
 	}
 	
+	private void serverPullDown(routerNode server) {
+			routerNode lowerNode = super.getLowerNode(server);
+			routerCache lowerCache = super.getCache(lowerNode);
+			routerTuple lowerTuple = lowerNode.getTuple(rResource);
+
+			if (!lowerCache.hasEnoughRemainingCacheSize(rResource)) {
+				List<routerResource> replacedResourceList =
+						lowerCache.saveThisResource(rResource);
+				if (replacedResourceList != null) {
+					//cache this resource, this resource is hotter than 
+					//all to be ousted resources
+					for (routerResource e : replacedResourceList) {
+						lowerCache.removeResource(e);
+					}
+					//cache the resource
+					lowerCache.scheduleLRU(rResource, lowerNode);
+					lowerTuple.setValid();
+					lowerTuple.setInNode(server);
+				}
+			}
+	}
+	
+	public void tupleNodePullDown() {
+		routerNode lowerNode = super.getLowerNode(firstTupleNode);
+		routerCache lowerCache = super.getCache(lowerNode);
+		routerTuple lowerTuple = lowerNode.getTuple(rResource);
+
+		if (!lowerCache.hasEnoughRemainingCacheSize(rResource)) {
+				List<routerResource> replacedResourceList =
+						lowerCache.saveThisResource(rResource);
+				if (replacedResourceList != null) {
+					//cache this resource, this resource is hotter than 
+					//all to be ousted resources
+					for (routerResource e : replacedResourceList) {
+						lowerCache.removeResource(e);
+						oustedResourceToSource(e);
+					}
+					//cache the resource
+				}
+		} else {
+			lowerCache.scheduleLRU(rResource, lowerNode);
+			updateTupleInfo(firstTupleNode);
+		}
+	}
+	
+	private void updateTupleInfo(routerNode node) {
+		routerCache cache = super.getCache(node);
+		routerTuple tuple = node.getTuple(rResource);
+
+		routerNode lowerNode = super.getLowerNode(node);
+		routerCache lowerCache = super.getCache(lowerNode);
+		routerTuple lowerTuple = lowerNode.getTuple(rResource);
+		
+		tuple.addOutNodes(lowerNode);
+
+		lowerTuple.setValid();
+		lowerTuple.setInNode(node);
+		
+	}
+	
+	public void oustedResourceToSource(routerNode node, routerResource resource) {
+		routerCache cache = super.getCache(node);
+		routerTuple tuple = node.getTuple(resource);
+
+		if (cache.isServer()) {
+			return;
+		}
+
+	}
+
 	public routerNode routeToSource(routerNode node) {
 		routerCache cache = super.getCache(node);
 		super.realList.add(node);
 
 		if (cache.isServer()) {
-			return null;
+			int idx = vlist.size();
+			return vlist.get(idx - 1);
 		} else {
 			cache.addResourceCount(rResource);
 		}
@@ -54,7 +122,7 @@ public class ClsPlus extends Cls {
 		if (node.hasValidTuple(rResource)) {
 			routerNode nextNode = getTupleOutNode(node);
 			if (nextNode.getid() == node.getid()) {
-				return null;
+				return node;
 			} else {
 				return routeToSource(nextNode);
 			}
@@ -96,6 +164,7 @@ public class ClsPlus extends Cls {
 		return null;
 	}
 	
+
 	public static void main(String[] args) {
 		List<routerNode> vlist = new ArrayList<routerNode>();
 		for (int i = 0; i < 4; i++) {

@@ -189,22 +189,81 @@ public class routerCache {
 	}
 	
 	public void addResourceCount(routerResource res) {
-		if (this.resCounter.containsKey(res)) {
-			Integer idx = this.resCounter.get(res);
-			this.resCounter.remove(res);
-			this.resCounter.put(res, idx+1);
-		} else {
-			this.resCounter.put(res, 1);
-		}
+		int idx = this.resourceCountList.indexOf(res);
+		routerResource resource = this.resourceCountList.get(idx);
+		resource.addCount();
 	}
 	
 	public Integer getResourceCount(routerResource res) {
-		if (this.resCounter.containsKey(res)) {
-			Integer idx = this.resCounter.get(res);
-			return idx;
-		} else {
-			return 0;
+		int idx = this.resourceCountList.indexOf(res);
+		routerResource resource = this.resourceCountList.get(idx);
+		return resource.getCount();
+	}
+	
+	public void addInResourceCountList(routerResource[] array) {
+		for (int i = 0; i < array.length; i++) {
+			routerResource res = array[i];
+			this.resourceCountList.add(res);
 		}
+	}
+	
+	public List<routerResource> getResourceCountList() {
+		Collections.sort(this.resourceCountList);
+		return this.resourceCountList;
+	}
+	
+	public boolean hasEnoughRemainingCacheSize(routerResource res) {
+		int resourceSize = res.getSize();
+		if (resourceSize > this.remainingCacheSize) {
+			return false;
+		} else {
+			return true;
+		}
+	}
+	
+	/**
+	 * the remaining size is not enough for the resource.
+	 * @param thisResource
+	 * @return null if no need to cache this resource. A list<routerResource> to be replaced if 
+	 * the replace is necessary.
+	 */
+	public List<routerResource> saveThisResource(routerResource thisResource) {
+		List<routerResource> replacedResourceList = new ArrayList<routerResource>();
+		Collections.sort(this.resourceCountList);
+		int size = thisResource.getSize();
+		int sumSize = 0;
+		for (routerResource se : this.resourceCountList) {
+			if (se.getID() != thisResource.getID()) {
+				replacedResourceList.add(se);
+				int eachSize = se.getSize();
+				sumSize += eachSize;
+				if (sumSize >= size) {
+					break;
+				}
+			}
+		}
+		//hotter than all resources to be replaced
+		if (this.largerThanAllResources(replacedResourceList, thisResource)) {
+			//cache this resource!
+			return replacedResourceList;
+		} else {
+			return null;
+		}
+	}
+	
+	/**
+	 * a litter tricky function. res1.compareTo(res2) if res1 hotter than res2
+	 * return 1;
+	 * @param list
+	 * @return
+	 */
+	public boolean largerThanAllResources(List<routerResource> list, routerResource resource) {
+		for (routerResource e : list) {
+			if (e.compareTo(resource) > 0) {
+				return false;
+			}
+		}
+		return true;
 	}
 
 	private List<routerResource> outResourceList = new ArrayList<routerResource>(); //store the flushed out resources.
@@ -218,18 +277,61 @@ public class routerCache {
     private long[] LFUAccessFrequece;       // store resource access frequence in this node
     private boolean isServer = false;
     //for CLS++
-    private Map<routerResource, Integer> resCounter = new HashMap<routerResource, Integer>();
+    private List<routerResource> resourceCountList = new ArrayList<routerResource>();
     
     public static void main(String[] args) {
+
     	routerResource resource1 = new routerResource(1, 3);
     	routerResource resource2 = new routerResource(2, 5);
     	routerResource resource3 = new routerResource(3, 6);
-    	routerCache cache = new routerCache(7, 0);
-    	cache.scheduleLRU(resource2, null);
-    	cache.scheduleLRU(resource1, null);
-    	cache.scheduleLRU(resource3, null);
-    	System.out.println("Resource2 " + cache.getResourceCount(resource2));
-    	System.out.println("Resource1 " + cache.getResourceCount(resource1));
+    	
+    	routerResource target = new routerResource(4,8);
+    	routerCache cache = new routerCache(14, 0);
+
+    	routerResource[] resArr = {resource1, resource2, resource3, target};
+    	cache.addInResourceCountList(resArr);
+    	for (int i = 0; i < 3; i++) {
+    		cache.addResourceCount(resource1);
+    	}
+    	for (int i = 0; i < 2; i++) {
+    		cache.addResourceCount(resource2);
+    	}
+   		cache.addResourceCount(resource3);
+   		System.out.println(resource2.getCount());
+   		List<routerResource> list = cache.getResourceCountList();
+   		for (routerResource e : list) {
+   			System.out.println(e.getID() + "  " + e.getCount() + " size " + e.getSize());
+   		}
+   		int i = 0;
+   		while(i < 6) {
+   			cache.addResourceCount(resource3);
+   			i++;
+   		}
+   		System.out.println();
+   		list = cache.getResourceCountList();
+   		for (routerResource e : list) {
+   			System.out.println(e.getID() + "  " + e.getCount() + " size " + e.getSize());
+   		}
+   		for (int j = 0; j < 2; j++) {
+   			cache.addResourceCount(target);
+   		}
+
+   		list = cache.getResourceCountList();
+   		System.out.println();
+   		for (routerResource e : list) {
+   			System.out.println(e.getID() + "  " + e.getCount() + " size " + e.getSize());
+   		}
+   		
+   		List<routerResource> vlist = cache.saveThisResource(target);
+   		if (vlist != null) {
+   			System.out.println("cache");
+   		} else {
+   			System.out.println("not cache");
+   		}
+   		
+   		System.out.println("res3.compareTo(res2) " + resource3.compareTo(resource2));
+   		System.out.println("res2.compareTo(res3) " + resource2.compareTo(resource3));
+   		
     }
     
 }
