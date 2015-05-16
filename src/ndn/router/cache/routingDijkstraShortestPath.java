@@ -76,27 +76,36 @@ public class routingDijkstraShortestPath {
 		if (algoType.equals("lcd")) {
 			Lcd algo = new Lcd(se, vlist, this.rMap);
 			algo.routing();
+			algo.addPathNum();
 			algo.showPath();
 			algo.stat();
 			this.HitRate = algo.getHitRate();
+			this.PathStr = algo.getPathStr();
 		} else if (algoType.equals("cls")) {
 			Cls algo = new Cls(se, vlist, this.rMap);
 			algo.routing();
+			algo.addPathNum();
 			algo.showPath();
 			algo.stat();
 			this.HitRate = algo.getHitRate();
+			this.PathStr = algo.getPathStr();
 		} else if (algoType.equals("ccn")) {
 			Ccn algo = new Ccn(se, vlist, this.rMap);
 			algo.routing();
+			algo.addPathNum();
 			algo.showPath();
 			algo.stat();
 			this.HitRate = algo.getHitRate();
+			this.PathStr = algo.getPathStr();
 		} else if (algoType.equals("cls+")) {
 			ClsPlus algo = new ClsPlus(se, vlist, this.rMap);
+			algo.showPath();
+			algo.addPathNum();
 			algo.routing();
 			algo.showPath();
 			algo.stat();
 			this.HitRate = algo.getHitRate();
+			this.PathStr = algo.getPathStr();
 		}
 		
 		
@@ -141,6 +150,10 @@ public class routingDijkstraShortestPath {
 		return this.HitRate;
 	}
 	
+	public double getPathStr() {
+		return this.PathStr;
+	}
+	
     private Map<routerNode, routerCache> rMap;
 	private Graph<routerNode, routerLink> gGraph;
 	private DistributionResource DResource;
@@ -156,4 +169,5 @@ public class routingDijkstraShortestPath {
 	private BigDecimal prateStatistic;                    // iCache/inoCache
 	private String algoType = "lcd";
 	private double HitRate = 0;
+	private double PathStr = 0;
 }

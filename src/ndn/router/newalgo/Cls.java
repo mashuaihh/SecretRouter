@@ -178,7 +178,7 @@ public class Cls extends NewAlgo {
 	}
 
 	private void printOut(List<routerResource> eList, routerNode node) {
-		File file = new File("c:\\clsResult.txt");
+		File file = new File("d:\\clsResult.txt");
 		PrintWriter fileOut = null;
 
 		try {
@@ -199,7 +199,7 @@ public class Cls extends NewAlgo {
 	}
 	
 	protected void printPath() {
-		File file = new File("c:\\clsResult.txt");
+		File file = new File("d:\\clsResult.txt");
 		PrintWriter fileOut = null;
 
 		try {
@@ -209,7 +209,7 @@ public class Cls extends NewAlgo {
 			e.printStackTrace();
 		}
 
-		fileOut.println("Resourse is " + super.rResource.getID()+ " size is " + super.rResource.getSize());
+		fileOut.println("Resource is " + super.rResource.getID()+ " size is " + super.rResource.getSize());
 		fileOut.print("Orig Path: ");
 		for (int i = 0; i < vlist.size(); i++) {
 			routerNode node = vlist.get(i);

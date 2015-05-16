@@ -36,7 +36,8 @@ public class routerTuple {
 	}
 
 	public void addOutNodes(routerNode node) {
-		this.OutNodes.add(node);
+		if (!this.OutNodes.contains(node))
+			this.OutNodes.add(node);
 	}
 	
 	public void removeOutNode(routerNode node) {

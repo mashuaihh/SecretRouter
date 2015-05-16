@@ -109,6 +109,7 @@ public class DistributionResource {
 	        	
 	        	/**
 	        	 * Initial the tuple of every resource in every node.
+                 * Initial the ResourceCountList of every node.
 	        	 * @author Mashuai
 	        	 */
 	        	for (routerNode e : vlist) {
@@ -240,6 +241,8 @@ public class DistributionResource {
   		// set cache size
     	for (routerNode v : Collections.unmodifiableCollection(rMap.keySet())) {
     		rMap.get(v).resetCacheSize((int)totalResourceSize);   
+//    		rMap.get(v).resetCacheSize(30);   
+
     	}
 
     	System.out.println("Node cache size:" + totalResourceSize);

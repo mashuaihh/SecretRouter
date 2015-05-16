@@ -18,6 +18,9 @@ public class NewAlgo {
 	private static int requestNum = 0;
 	private static int hitNum = 0;
 	
+	private static int realPathNum = 0;
+	private static int oriPathNum = 0;
+	
 	public NewAlgo(simulationEvent se, List<routerNode> vlist, Map<routerNode, routerCache> rMap) {
 		this.rMap = rMap;
 		this.se = se;
@@ -54,12 +57,17 @@ public class NewAlgo {
 	}
 	
 	public double getHitRate() {
-		double rate = this.hitNum * 1.0 / this.requestNum;
+		double rate = NewAlgo.hitNum * 1.0 / NewAlgo.requestNum;
 		return rate;
 	}
 	
 	public double getPathStretch() {
 		double ps = this.realList.size() * 1.0 / this.vlist.size();
+		return ps;
+	}
+	
+	public double getPathStr() {
+		double ps = NewAlgo.realPathNum * 1.0 / NewAlgo.oriPathNum;
 		return ps;
 	}
 	
@@ -109,19 +117,23 @@ public class NewAlgo {
 	}
 	
 	public int getHitNum() {
-		return this.hitNum;
+		return NewAlgo.hitNum;
 	}
 	
 	public void addHitNum() {
-		this.hitNum++;
+		NewAlgo.hitNum++;
 	}
 	
 	public void addRequestNum() {
-		this.requestNum++;
+		NewAlgo.requestNum++;
 	}
 	
 	public int getRequestNum() {
-		return this.requestNum;
+		return NewAlgo.requestNum;
 	}
-
+	
+	public void addPathNum() {
+		NewAlgo.oriPathNum += this.vlist.size();
+		NewAlgo.realPathNum += this.realList.size();
+	}
 }

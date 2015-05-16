@@ -35,7 +35,8 @@ public class routerMain {
     private double routerCacheSizedenominator = 2; // default= resourceNum/10
     private double aa = -0.3;
     private String algoType = "lcd";
-    public double HitRate = 0;
+    public double HitRate = 0.0;
+    public double PathStr = 0.0;
 
     public routerMain() {
     	
@@ -101,6 +102,7 @@ public class routerMain {
 			//se = sQueue.getEvent();
 		}
 		this.HitRate = rDSP.getHitRate();
+		this.PathStr = rDSP.getPathStr();
 		
         // close file		
 		drs.closefile();
@@ -120,6 +122,7 @@ public class routerMain {
 		fileOut.println("aa : " + this.aa + " denomin: " + this.routerCacheSizedenominator
 				+ " Algorithm: " + this.algoType);
 		fileOut.println("Hit rate: " + this.HitRate);
+		fileOut.println("Path Stretch: " + this.PathStr);
 		fileOut.println();
 		fileOut.println("----------------------------------------------------");
 		fileOut.close();
@@ -130,11 +133,10 @@ public class routerMain {
 	 * main method
 	 */
 	public static void main(String[] args) {
-//		double[] denomin = {0.1, 0.2, 0.3, 0.4, 0.5};
-		double[] denomin = {0.1};
+		double[] denomin = {0.1, 0.2, 0.3, 0.4, 0.5};
 		double[] aa = {-0.3, -0.9};
-//		String[] algo = {"lcd", "ccn", "cls"};
-		String[] algo = {"cls+"};
+		String[] algo = {"lcd", "ccn", "cls", "cls+"};
+//		String[] algo = {"cls+"};
 		
 		for (double each_aa : aa) {
 			for (double de : denomin) {

@@ -141,8 +141,18 @@ public class routerCache {
 		rResource.addLast(rR);
 	}
 	
+	public boolean hasCountListResourceInCache(routerResource resource) {
+		for (int i = 0; i < this.Llist.size(); i++) {
+			routerResource cacheResource = this.Llist.get(i);
+			if (cacheResource.getID() == resource.getID()) {
+				return true;
+			}
+		}
+		return false;
+	}
+	
 	public boolean hasResource(routerResource resource) {
-		return rResource.contains(resource)|| Llist.contains(resource)||this.isServer;
+		return Llist.contains(resource)||this.isServer;
 	}
 	
 	/**
@@ -152,8 +162,34 @@ public class routerCache {
 		return rResource;
 	}
 	
+	public LinkedList<routerResource> getCacheResourceList() {
+		return this.Llist;
+	}
+	
+	public routerResource getResourceById(int idx) {
+		for (routerResource res : this.Llist) {
+			if (res.getID() == idx) {
+				return res;
+			}
+		}
+		return null;
+	}
+	
+	public routerResource getCountListResourceById(int idx) {
+		for (routerResource res : this.resourceCountList) {
+			if (res.getID() == idx) {
+				return res;
+			}
+		}
+		return null;
+	}
+	
 	public void removeResource(routerResource resource) {
+		if (resource == null) {
+			return;
+		}
 		this.Llist.remove(resource);
+		this.remainingCacheSize += resource.getSize();
 	}
 	
 	/**
@@ -189,21 +225,30 @@ public class routerCache {
 	}
 	
 	public void addResourceCount(routerResource res) {
-		int idx = this.resourceCountList.indexOf(res);
-		routerResource resource = this.resourceCountList.get(idx);
+		routerResource resource = getCountResourceById(res.getID());
 		resource.addCount();
 	}
 	
+	private routerResource getCountResourceById(int index) {
+		for (int i = 0; i < this.resourceCountList.size(); i++) {
+			routerResource each = this.resourceCountList.get(i);
+			if (each.getID() == index) {
+				return each;
+			}
+		}
+		return null;
+	}
+	
 	public Integer getResourceCount(routerResource res) {
-		int idx = this.resourceCountList.indexOf(res);
-		routerResource resource = this.resourceCountList.get(idx);
+		routerResource resource = getCountResourceById(res.getID());
 		return resource.getCount();
 	}
 	
 	public void addInResourceCountList(routerResource[] array) {
 		for (int i = 0; i < array.length; i++) {
 			routerResource res = array[i];
-			this.resourceCountList.add(res);
+			routerResource newResource = new routerResource(res.getID(), res.getSize());
+			this.resourceCountList.add(newResource);
 		}
 	}
 	
@@ -229,11 +274,16 @@ public class routerCache {
 	 */
 	public List<routerResource> saveThisResource(routerResource thisResource) {
 		List<routerResource> replacedResourceList = new ArrayList<routerResource>();
+
 		Collections.sort(this.resourceCountList);
+
 		int size = thisResource.getSize();
-		int sumSize = 0;
+		int sumSize = this.remainingCacheSize;
+
 		for (routerResource se : this.resourceCountList) {
-			if (se.getID() != thisResource.getID()) {
+//			if (this.hasResourceInCountList(se) && thisResource.getID() != se.getID()) {
+//			if (this.hasResource(thisResource) && thisResource.getID() != se.getID()) {
+			if (this.hasCountListResourceInCache(se) && thisResource.getID() != se.getID()) {
 				replacedResourceList.add(se);
 				int eachSize = se.getSize();
 				sumSize += eachSize;
@@ -258,12 +308,17 @@ public class routerCache {
 	 * @return
 	 */
 	public boolean largerThanAllResources(List<routerResource> list, routerResource resource) {
+		routerResource res = this.getCountListResourceById(resource.getID());
 		for (routerResource e : list) {
-			if (e.compareTo(resource) > 0) {
+			if (e.compareTo(res) > 0) {
 				return false;
 			}
 		}
 		return true;
+	}
+	
+	public int getSize() {
+		return this.cachesize;
 	}
 
 	private List<routerResource> outResourceList = new ArrayList<routerResource>(); //store the flushed out resources.
