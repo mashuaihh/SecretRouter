@@ -33,7 +33,8 @@ public class ClsPlus extends Cls {
 		if (cache.isServer()) {
 			serverPullDown(node);
 		} else {
-			//there is tuple, parameter node is the node with tuple(the last tuple)
+			//there is tuple 
+			super.addHitNum();
 			tupleNodePullDown();
 		}
 	}
@@ -46,6 +47,7 @@ public class ClsPlus extends Cls {
 			if (!lowerCache.hasEnoughRemainingCacheSize(rResource)) {
 				List<routerResource> replacedResourceList =
 						lowerCache.saveThisResource(rResource);
+
 				if (replacedResourceList != null) {
 					//cache this resource, this resource is hotter than 
 					//all to be ousted resources
@@ -57,6 +59,12 @@ public class ClsPlus extends Cls {
 					lowerTuple.setValid();
 					lowerTuple.setInNode(server);
 				}
+
+			} else {
+				//has space for this resource
+					lowerCache.scheduleLRU(rResource, lowerNode);
+					lowerTuple.setValid();
+					lowerTuple.setInNode(server);
 			}
 	}
 	
@@ -69,14 +77,26 @@ public class ClsPlus extends Cls {
 				List<routerResource> replacedResourceList =
 						lowerCache.saveThisResource(rResource);
 				if (replacedResourceList != null) {
+
 					//cache this resource, this resource is hotter than 
 					//all to be ousted resources
 					for (routerResource e : replacedResourceList) {
 						lowerCache.removeResource(e);
-						oustedResourceToSource(e);
 					}
+
 					//cache the resource
+					lowerCache.scheduleLRU(rResource, lowerNode);
+					//update the trail
+					updateTupleInfo(this.firstTupleNode);
+
+					//oust all the replaced resources
+					for (routerResource e : replacedResourceList) {
+						lowerCache.removeResource(e);
+//						oustedResourceToSource(e);
+					}
+
 				}
+
 		} else {
 			lowerCache.scheduleLRU(rResource, lowerNode);
 			updateTupleInfo(firstTupleNode);
@@ -101,12 +121,67 @@ public class ClsPlus extends Cls {
 	public void oustedResourceToSource(routerNode node, routerResource resource) {
 		routerCache cache = super.getCache(node);
 		routerTuple tuple = node.getTuple(resource);
+		
+		//1.find inNode from tuple 
+		routerNode inNode = tuple.getInNode();
+		routerCache inCache = super.getCache(inNode);
+		routerTuple inTuple = inNode.getTuple(rResource);
+		
+		//2.delete tuple for this node
+		tuple.deleteTuple();
 
-		if (cache.isServer()) {
+		//3.if inNode is server, end
+		if (inCache.isServer()) {
+			return;
+		}
+
+		//4.update inNode tuple
+		//if has multiple outs, delete the out in outList
+		//if has not multi, clear out 
+		List<routerNode> outList = inTuple.getOutNodes();
+		if (outList.size() > 1) {
+			outList.remove(node);
+			return;
+		} else {
+			outList.clear();
+		}
+
+		//5.has space for resource?
+		if (!inCache.hasEnoughRemainingCacheSize(rResource)) {
+
+			List<routerResource> replacedResourceList =
+					inCache.saveThisResource(rResource);
+			
+			if (replacedResourceList != null) {
+				//save this resource
+
+				//remove all to be replaced resources
+				for (routerResource e : replacedResourceList) {
+					inCache.removeResource(e);
+				}
+
+				//cache the resource
+				inCache.scheduleLRU(rResource, inNode);
+				
+				//ousted the replaced resources
+				for (routerResource e : replacedResourceList) {
+					oustedResourceToSource(inNode, e);
+				}
+				
+				return;
+
+			} else {
+				//not save the resource in this node
+				oustedResourceToSource(inNode, rResource);
+			}
+			
+		} else {
+			inCache.scheduleLRU(rResource, inNode);
 			return;
 		}
 
 	}
+
 
 	public routerNode routeToSource(routerNode node) {
 		routerCache cache = super.getCache(node);
@@ -155,8 +230,8 @@ public class ClsPlus extends Cls {
 	}
 	
 	private routerNode getFirstTupleNode() {
-		for (int i = 0; i < super.realList.size(); i++) {
-			routerNode node = realList.get(i);
+		for (int i = 0; i < super.vlist.size(); i++) {
+			routerNode node = vlist.get(i);
 			if (node.hasValidTuple(rResource)) {
 				return node;
 			}
