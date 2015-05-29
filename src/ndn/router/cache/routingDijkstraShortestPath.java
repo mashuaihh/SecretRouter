@@ -81,6 +81,7 @@ public class routingDijkstraShortestPath {
 			algo.stat();
 			this.HitRate = algo.getHitRate();
 			this.PathStr = algo.getPathStr();
+			this.HitNumber = algo.getHitNum();
 		} else if (algoType.equals("cls")) {
 			Cls algo = new Cls(se, vlist, this.rMap);
 			algo.routing();
@@ -89,6 +90,8 @@ public class routingDijkstraShortestPath {
 			algo.stat();
 			this.HitRate = algo.getHitRate();
 			this.PathStr = algo.getPathStr();
+			this.HitNumber = algo.getHitNum();
+
 		} else if (algoType.equals("ccn")) {
 			Ccn algo = new Ccn(se, vlist, this.rMap);
 			algo.routing();
@@ -97,15 +100,17 @@ public class routingDijkstraShortestPath {
 			algo.stat();
 			this.HitRate = algo.getHitRate();
 			this.PathStr = algo.getPathStr();
+			this.HitNumber = algo.getHitNum();
 		} else if (algoType.equals("cls+")) {
 			ClsPlus algo = new ClsPlus(se, vlist, this.rMap);
 			algo.showPath();
-			algo.addPathNum();
 			algo.routing();
+			algo.addPathNum();
 			algo.showPath();
 			algo.stat();
 			this.HitRate = algo.getHitRate();
 			this.PathStr = algo.getPathStr();
+			this.HitNumber = algo.getHitNum();
 		}
 		
 		
@@ -154,6 +159,10 @@ public class routingDijkstraShortestPath {
 		return this.PathStr;
 	}
 	
+	public static void clearStat() {
+		NewAlgo.clearStat();
+	}
+	
     private Map<routerNode, routerCache> rMap;
 	private Graph<routerNode, routerLink> gGraph;
 	private DistributionResource DResource;
@@ -169,5 +178,7 @@ public class routingDijkstraShortestPath {
 	private BigDecimal prateStatistic;                    // iCache/inoCache
 	private String algoType = "lcd";
 	private double HitRate = 0;
+	public int HitNumber = 0;
+	public int requestNum = 0; 
 	private double PathStr = 0;
 }

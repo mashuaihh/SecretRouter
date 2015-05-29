@@ -242,7 +242,6 @@ public class DistributionResource {
     	for (routerNode v : Collections.unmodifiableCollection(rMap.keySet())) {
     		rMap.get(v).resetCacheSize((int)totalResourceSize);   
 //    		rMap.get(v).resetCacheSize(30);   
-
     	}
 
     	System.out.println("Node cache size:" + totalResourceSize);

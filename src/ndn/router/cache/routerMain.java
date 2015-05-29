@@ -21,7 +21,7 @@ public class routerMain {
     public static final int powerlawGenerator = 0;  // generating powerlaw sequence 0-new 1-load
     
     public static final int iswitch2 = 0; // for generating resource request// 0-create request 1-load request
-    public static final int vertexNum = 100;
+    public static final int vertexNum = 7;
   
     
     // some constants
@@ -37,6 +37,8 @@ public class routerMain {
     private String algoType = "lcd";
     public double HitRate = 0.0;
     public double PathStr = 0.0;
+    public int HitNumber = 0;
+    public static int requestTime = 100000;
 
     public routerMain() {
     	
@@ -78,7 +80,7 @@ public class routerMain {
 	 	//simulationEvent se = sQueue.getEvent();
 		int etype;
 		simulationEvent se;
-		long sTimes = 10000;
+		long sTimes = routerMain.requestTime;
 		while(sTimes > 0){
 			sTimes--;
 			se = drs.eventgenerate();
@@ -103,6 +105,8 @@ public class routerMain {
 		}
 		this.HitRate = rDSP.getHitRate();
 		this.PathStr = rDSP.getPathStr();
+		this.HitNumber = rDSP.HitNumber;
+		routingDijkstraShortestPath.clearStat();
 		
         // close file		
 		drs.closefile();
@@ -122,6 +126,8 @@ public class routerMain {
 		fileOut.println("aa : " + this.aa + " denomin: " + this.routerCacheSizedenominator
 				+ " Algorithm: " + this.algoType);
 		fileOut.println("Hit rate: " + this.HitRate);
+		fileOut.println("Hit number: " + this.HitNumber);
+		fileOut.println("Request number: " + routerMain.requestTime);
 		fileOut.println("Path Stretch: " + this.PathStr);
 		fileOut.println();
 		fileOut.println("----------------------------------------------------");
@@ -134,7 +140,9 @@ public class routerMain {
 	 */
 	public static void main(String[] args) {
 		double[] denomin = {0.1, 0.2, 0.3, 0.4, 0.5};
+//		double[] denomin = {0.9};
 		double[] aa = {-0.3, -0.9};
+//		double[] aa = {-0.9};
 		String[] algo = {"lcd", "ccn", "cls", "cls+"};
 //		String[] algo = {"cls+"};
 		

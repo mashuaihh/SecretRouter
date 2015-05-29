@@ -79,7 +79,8 @@ public class GraphTopologyRandom {
     	else{
             try{
             	rgraph = new GraphFactory().create();
-            	BufferedReader graphreader = new BufferedReader(new FileReader("C:/GraphTopology.txt"));
+//            	BufferedReader graphreader = new BufferedReader(new FileReader("C:/RICDNGraphTopology.txt"));
+            	BufferedReader graphreader = new BufferedReader(new FileReader("c:/sb6.txt"));
             	String line = graphreader.readLine();  
             	StringTokenizer tokenizer;
             	
@@ -104,6 +105,7 @@ public class GraphTopologyRandom {
                     // get vertex No.
                     int v1 = Integer.parseInt(tokenizer.nextToken());
                     int v2 = Integer.parseInt(tokenizer.nextToken());
+                    int weightnumber = Integer.parseInt(tokenizer.nextToken());
                     routerNode rN1 = null;
                     routerNode rN2 = null;
                     // search vertex in the list
@@ -115,7 +117,7 @@ public class GraphTopologyRandom {
                     		rN2 = vlist.get(j);
                     	}
                     }
-                    rgraph.addEdge(new routerLink(v1, v2, 1, 1),
+                    rgraph.addEdge(new routerLink(v1, v2, 1, weightnumber),
                     		rN1, rN2);
             	}
                 System.out.println("ER average degree:" + edgeNumber*2.0/verNumber);

@@ -22,7 +22,7 @@ public class Cls extends NewAlgo {
 	
 	public Cls(simulationEvent se, List<routerNode> vlist, Map<routerNode, routerCache> rMap) {
 		super(se, vlist, rMap);
-		super.addRequestNum();
+//		super.addRequestNum();
 	}
 	
 	public void routing() {

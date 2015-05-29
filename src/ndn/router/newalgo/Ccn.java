@@ -12,7 +12,7 @@ public class Ccn extends NewAlgo {
 
 	public Ccn(simulationEvent se, List<routerNode> vlist, Map<routerNode, routerCache> rMap) {
 		super(se, vlist, rMap);
-		super.addRequestNum();
+//		super.addRequestNum();
 	}
 	
 	public void routing() {
@@ -25,8 +25,8 @@ public class Ccn extends NewAlgo {
 			super.realList.add(each);
 			
 			routerCache cache = super.getCache(each);
-			if (cache.hasResource(resource) || cache.isServer()) {
-				if ((i != (vlist.size() - 1)) && (i != 0))
+			if (cache.hasResource(resource)) {
+				if ((i != (vlist.size() - 1)))
 					super.addHitNum();
 				break;
 			}

@@ -9,7 +9,7 @@ public class Lcd extends NewAlgo {
 
 	public Lcd(simulationEvent se, List<routerNode> vlist, Map<routerNode, routerCache> rMap) {
 		super(se, vlist, rMap);
-		super.addRequestNum();
+//		super.addRequestNum();
 	}
 	
 	public void routing() {
@@ -22,7 +22,7 @@ public class Lcd extends NewAlgo {
 			
 			routerCache cache = super.getCache(each);
 			if (cache.hasResource(resource)) {
-				if ((i != (vlist.size() - 1)) && (i != 0))
+				if ((i != (vlist.size() - 1)))
 					super.addHitNum();
 				routerNode lowerNode = super.getLowerNode(each);
 				routerCache lowerCache = super.getCache(lowerNode);

@@ -26,6 +26,7 @@ public class NewAlgo {
 		this.se = se;
 		this.rResource = se.getrouterResource();
 		this.vlist = vlist;
+		this.addRequestNum();
 	}
 	
 	public void showPath() { out.println();
@@ -102,6 +103,13 @@ public class NewAlgo {
 	public routerCache getCache(routerNode node) {
 		routerCache cache = this.rMap.get(node);
 		return cache;
+	}
+	
+	public static void clearStat() {
+		NewAlgo.hitNum = 0;
+		NewAlgo.requestNum = 0;
+		NewAlgo.oriPathNum = 0;
+		NewAlgo.realPathNum = 0;
 	}
 	
 	public List<routerNode> getVList() {

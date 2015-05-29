@@ -19,7 +19,7 @@ public class ClsPlus extends Cls {
 			
 	public ClsPlus(simulationEvent se, List<routerNode> vlist, Map<routerNode, routerCache> rMap) {
 		super(se, vlist, rMap);
-		super.addRequestNum();
+//		super.addRequestNum();
 
 			int idx = vlist.size();
 			//return the serverNode
@@ -297,7 +297,7 @@ public class ClsPlus extends Cls {
 		routerCache cache = super.getCache(node);
 		super.realList.add(node);
 		
-		if (this.routingTimes > 25) {
+		if (this.routingTimes > 10) {
 			realList = vlist;
 			return server;
 		}

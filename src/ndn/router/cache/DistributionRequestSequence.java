@@ -216,7 +216,21 @@ public class DistributionRequestSequence {
 		simulationEvent e = null;
 	    if(routerMain.iswitch2 == 0){
 	    	// produce a resource request
-	    	double pp = reRandom.nextDouble();
+//	    	double pp = reRandom.nextDouble();
+	    	
+	    	List<Double> doubleList = new ArrayList<Double>();
+	    	for (int i = 0; i < 8; i++) {
+	    		double m = reRandom.nextDouble();
+	    		doubleList.add(m);
+	    	}
+	    	
+	    	double pp = 0.0;
+	    	for (Double d : doubleList) {
+	    		if (d > pp) {
+	    			pp = d;
+	    		}
+	    	}
+	    	
 			int index = 0;  
 			while(pp > requestFrequency[index]) index++; // so index is a picked random number
 	    	routerResource rR = rQueue[index];
