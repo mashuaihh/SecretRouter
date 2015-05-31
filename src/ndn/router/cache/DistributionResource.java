@@ -110,12 +110,14 @@ public class DistributionResource {
 	        	/**
 	        	 * Initial the tuple of every resource in every node.
                  * Initial the ResourceCountList of every node.
+                 * Initial allResourcesList in every node's cache.
 	        	 * @author Mashuai
 	        	 */
 	        	for (routerNode e : vlist) {
 	        		e.addInTupleList(rQueue);
 	        		routerCache each_cache = this.rMap.get(e);
 	        		each_cache.addInResourceCountList(rQueue);
+	        		each_cache.addAllResources(rQueue);
 	        	}
 	        	
                 // output vertex-resource info

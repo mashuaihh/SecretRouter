@@ -245,7 +245,6 @@ public class Cls extends NewAlgo {
 				outList.clear();
 			}
 
-
 		//5.has space for resource?
 		if (!inCache.hasEnoughRemainingCacheSize(resource)) {
 			//No enough space, need to evict other resources.
@@ -255,7 +254,8 @@ public class Cls extends NewAlgo {
 			
 				//remove all to be replaced resources in this node.
 				for (routerResource e : replacedResourceList) {
-					routerResource resourceEach = cache.getResourceById(e.getID());
+//					routerResource resourceEach = cache.getResourceById(e.getID());
+					routerResource resourceEach = inCache.getResourceById(e.getID(), true);
 					inCache.removeResource(resourceEach);
 				}
 
@@ -264,7 +264,7 @@ public class Cls extends NewAlgo {
 				
 				//ousted the replaced resources
 				for (routerResource e : replacedResourceList) {
-					routerResource resourceEach = cache.getResourceById(e.getID());
+					routerResource resourceEach = inCache.getResourceById(e.getID(), true);
 					oustedResourceToSource(inNode, resourceEach);
 				}
 
@@ -276,7 +276,6 @@ public class Cls extends NewAlgo {
 			
 			//update tuple in inNode
 			inTuple.getOutNodes().clear();
-			
 			
 			return;
 		}

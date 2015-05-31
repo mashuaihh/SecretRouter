@@ -175,6 +175,16 @@ public class routerCache {
 		return null;
 	}
 	
+	public routerResource getResourceById(int idx, boolean boo) {
+		for (routerResource r : this.allResourcesList) {
+			if (r.getID() == idx) {
+				return r;
+			}
+		}
+		return null;
+	}
+	
+	
 	public routerResource getCountListResourceById(int idx) {
 		for (routerResource res : this.resourceCountList) {
 			if (res.getID() == idx) {
@@ -347,6 +357,16 @@ public class routerCache {
 	public int getSize() {
 		return this.cachesize;
 	}
+	
+	public void addAllResources(routerResource[] rQueue) {
+		for (routerResource e : rQueue) {
+			this.allResourcesList.add(e);
+		}
+	}
+	
+	public void addAllResource(routerResource res) {
+		this.allResourcesList.add(res);
+	}
 
 	private List<routerResource> outResourceList = new ArrayList<routerResource>(); //store the flushed out resources.
 	
@@ -360,6 +380,7 @@ public class routerCache {
     private boolean isServer = false;
     //for CLS++
     private List<routerResource> resourceCountList = new ArrayList<routerResource>();
+    private List<routerResource> allResourcesList = new ArrayList<routerResource>();
     
     public static void main(String[] args) {
 

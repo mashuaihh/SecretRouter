@@ -66,6 +66,7 @@ public class Testing {
 	        		e.addInTupleList(rQueue);
 	        		routerCache each_cache = this.getCache(e);
 	        		each_cache.addInResourceCountList(rQueue);
+	        		each_cache.addAllResources(rQueue);
 	        	}
 	}
 	
@@ -147,6 +148,17 @@ public class Testing {
  *    2     3
  *          4 
  */
+		testList.add("4,3");
+		testList.add("4,3");
+		testList.add("4,3");
+		testList.add("4,5");
+		testList.add("4,5");
+		testList.add("4,5");
+		testList.add("4,8");
+		testList.add("4,8");
+		testList.add("4,8");
+		testList.add("4,3");
+
 //		testList.add("4,3");
 //		testList.add("4,3");
 //		testList.add("4,3");
@@ -162,14 +174,14 @@ public class Testing {
 //		testList.add("1,3");
 //		testList.add("4,3");
 		
-		testList.add("4,3");
-		testList.add("4,3");
-		testList.add("4,3");
-		testList.add("2,3");
-		testList.add("2,9");
-		testList.add("2,9");
-		testList.add("2,3");
-		testList.add("2,9");
+//		testList.add("4,3");
+//		testList.add("4,3");
+//		testList.add("4,3");
+//		testList.add("2,3");
+//		testList.add("2,9");
+//		testList.add("2,9");
+//		testList.add("2,3");
+//		testList.add("2,9");
 		
 		
 		this.processTestList(testList);
