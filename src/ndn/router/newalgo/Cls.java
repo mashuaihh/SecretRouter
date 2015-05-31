@@ -234,7 +234,19 @@ public class Cls extends NewAlgo {
 			return;
 		}
 
-		//4.has space for resource?
+		//4.update inNode tuple
+		//if has multiple outs, delete the out in outList
+		//if has not multi, clear out 
+			List<routerNode> outList = inTuple.getOutNodes();
+			if (outList.size() > 1) {
+				outList.remove(node);
+				return;
+			} else {
+				outList.clear();
+			}
+
+
+		//5.has space for resource?
 		if (!inCache.hasEnoughRemainingCacheSize(resource)) {
 			//No enough space, need to evict other resources.
 
@@ -256,16 +268,6 @@ public class Cls extends NewAlgo {
 					oustedResourceToSource(inNode, resourceEach);
 				}
 
-		//4.update inNode tuple
-		//if has multiple outs, delete the out in outList
-		//if has not multi, clear out 
-			List<routerNode> outList = inTuple.getOutNodes();
-			if (outList.size() > 1) {
-				outList.remove(node);
-				return;
-			} else {
-				outList.clear();
-			}
 
 			//else, ie the inNode has enough space to cache the resource
 		} else {

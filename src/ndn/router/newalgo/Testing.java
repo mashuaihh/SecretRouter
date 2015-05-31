@@ -142,22 +142,35 @@ public class Testing {
 		List<String> testList = new ArrayList<String>();
 		//"1,2" 1 stands for requestNode id, 2 stands for resource size.
 /**
- * 
- * @author user
  * 		 0
  *       1
  *    2     3
  *          4 
  */
+//		testList.add("4,3");
+//		testList.add("4,3");
+//		testList.add("4,3");
+//		testList.add("4,3");
+//		testList.add("4,9");
+//		testList.add("4,9");
+//		testList.add("4,9");
+//		testList.add("4,3");
+//		testList.add("4,9");
+
+//		testList.add("4,3");
+//		testList.add("4,3");
+//		testList.add("1,3");
+//		testList.add("4,3");
+		
 		testList.add("4,3");
 		testList.add("4,3");
 		testList.add("4,3");
-		testList.add("4,3");
-		testList.add("4,9");
-		testList.add("4,9");
-		testList.add("4,9");
-		testList.add("4,3");
-		testList.add("4,9");
+		testList.add("2,3");
+		testList.add("2,9");
+		testList.add("2,9");
+		testList.add("2,3");
+		testList.add("2,9");
+		
 		
 		this.processTestList(testList);
 	}
