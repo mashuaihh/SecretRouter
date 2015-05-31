@@ -20,13 +20,14 @@ import ndn.router.cache.simulationEvent;
 
 public class Cls extends NewAlgo {
 	
+	private routerNode firstTupleNode = getTupleNode();
+
 	public Cls(simulationEvent se, List<routerNode> vlist, Map<routerNode, routerCache> rMap) {
 		super(se, vlist, rMap);
 //		super.addRequestNum();
 	}
 	
 	public void routing() {
-		routerNode firstTupleNode = getTupleNode();
 
 		if (firstTupleNode == null) {
 			//no tuple appears during the trail to server
@@ -35,7 +36,8 @@ public class Cls extends NewAlgo {
 			routerNode downNode = super.getLowerNode(serverNode);
 			realList = vlist;
 			printPath();
-			caching(serverNode, downNode);
+//			caching(serverNode, downNode);
+			this.serverPullDown(serverNode);
 
 		} else {
 			//Tuple is found on the way to server
@@ -77,7 +79,8 @@ public class Cls extends NewAlgo {
 				
 					super.addHitNum();
 				//for caching
-				caching(firstTupleNode, downNode);
+//				caching(firstTupleNode, downNode);
+				this.tupleNodePullDown();
 			}
 		}
 	}
@@ -102,7 +105,200 @@ public class Cls extends NewAlgo {
 			return findEndOfTrail(outNode);
 		}
 	}
+
+	private void serverPullDown(routerNode server) {
+			routerNode lowerNode = super.getLowerNode(server);
+			routerCache lowerCache = super.getCache(lowerNode);
+			routerTuple lowerTuple = lowerNode.getTuple(rResource);
+
+			//has enough space to cache this resource.
+			//if not, do nothing.
+			if (lowerCache.getSize() < rResource.getSize()) {
+				return;
+			}
+
+			//see if there's enough remaining space to cache
+			//not enough
+			if (!lowerCache.hasEnoughRemainingCacheSize(rResource)) {
+
+				List<routerResource> replacedResourceList =
+						lowerCache.saveThisResource(rResource, true);
+
+				List<routerResource> replacedRealResourceList = new ArrayList<routerResource>();
+				
+				if (replacedResourceList != null) {
+					//cache this resource, this resource is hotter than 
+					//all to be ousted resources
+					for (routerResource e : replacedResourceList) {
+						routerResource resource = lowerCache.getResourceById(e.getID());
+						lowerCache.removeResource(resource);
+
+						//update tuple after removing
+//						routerTuple removedTuple = lowerNode.getTuple(e);
+//						removedTuple.deleteTuple();
+
+						replacedRealResourceList.add(resource);
+					}
+
+					//cache the resource
+					if (lowerCache.scheduleLRU(rResource, lowerNode)) {
+						lowerTuple.setValid();
+						lowerTuple.setInNode(server);
+					}
+
+					//oust all the replaced resources
+					for (routerResource e : replacedRealResourceList) {
+						oustedResourceToSource(lowerNode, e);
+					}
+				}
+				
+			} else {
+				//has enough remaining space for this resource
+					lowerCache.scheduleLRU(rResource, lowerNode);
+					lowerTuple.setValid();
+					lowerTuple.setInNode(server);
+			}
+	}
 	
+	public void tupleNodePullDown() {
+		routerNode lowerNode = super.getLowerNode(firstTupleNode);
+		routerCache lowerCache = super.getCache(lowerNode);
+		routerTuple lowerTuple = lowerNode.getTuple(rResource);
+
+		if (lowerCache.getSize() < rResource.getSize()) {
+				return;
+		}
+		
+		if (!lowerCache.hasEnoughRemainingCacheSize(rResource)) {
+			
+				List<routerResource> replacedResourceList =
+						lowerCache.saveThisResource(rResource, true);
+				//to store the real routerResource objects.
+				List<routerResource> replacedRealResourceList = new ArrayList<routerResource>();
+
+				if (replacedResourceList != null) {
+
+					//cache this resource, this resource is hotter than 
+					//all to be ousted resources
+					for (routerResource e : replacedResourceList) {
+						routerResource resource = lowerCache.getResourceById(e.getID());
+						lowerCache.removeResource(resource);
+
+						//update the trail after removing
+//						routerTuple removedTuple = lowerNode.getTuple(resource);
+//						removedTuple.deleteTuple();
+
+						replacedRealResourceList.add(resource); 
+					}
+
+					//cache the resource
+					lowerCache.scheduleLRU(rResource, lowerNode);
+
+					//update tuple
+					//delete rResource in firstTupleNode
+					updateTupleInfo(this.firstTupleNode);
+
+					//oust all the replaced resources
+					for (routerResource e : replacedRealResourceList ) {
+//						oustedResourceToSource(firstTupleNode, e);
+						oustedResourceToSource(lowerNode, e);
+					}
+
+				}
+
+		} else {
+			lowerCache.scheduleLRU(rResource, lowerNode);
+			updateTupleInfo(firstTupleNode);
+		}
+	}
+	
+	/**
+	 * Oust this resource in this node, route the resource to its source.
+	 * @param node
+	 * @param resource
+	 */
+	public void oustedResourceToSource(routerNode node, routerResource resource) {
+		routerCache cache = super.getCache(node);
+		routerTuple tuple = node.getTuple(resource);
+		
+		//1.find inNode from tuple 
+		routerNode inNode = tuple.getInNode();
+		routerCache inCache = super.getCache(inNode);
+		routerTuple inTuple = inNode.getTuple(resource);
+		
+		//2.delete tuple for this node
+		tuple.deleteTuple();
+
+		//3.if inNode is server, end
+		if (inCache.isServer()) {
+			return;
+		}
+
+		//4.has space for resource?
+		if (!inCache.hasEnoughRemainingCacheSize(resource)) {
+			//No enough space, need to evict other resources.
+
+			List<routerResource> replacedResourceList =
+					inCache.saveThisResource(resource, true);
+			
+				//remove all to be replaced resources in this node.
+				for (routerResource e : replacedResourceList) {
+					routerResource resourceEach = cache.getResourceById(e.getID());
+					inCache.removeResource(resourceEach);
+				}
+
+				//cache the resource
+				inCache.scheduleLRU(resource, inNode);
+				
+				//ousted the replaced resources
+				for (routerResource e : replacedResourceList) {
+					routerResource resourceEach = cache.getResourceById(e.getID());
+					oustedResourceToSource(inNode, resourceEach);
+				}
+
+		//4.update inNode tuple
+		//if has multiple outs, delete the out in outList
+		//if has not multi, clear out 
+			List<routerNode> outList = inTuple.getOutNodes();
+			if (outList.size() > 1) {
+				outList.remove(node);
+				return;
+			} else {
+				outList.clear();
+			}
+
+			//else, ie the inNode has enough space to cache the resource
+		} else {
+			//inCache.hasEnoughRemainingCacheSize(rResource)
+			inCache.scheduleLRU(resource, inNode);
+			
+			//update tuple in inNode
+			inTuple.getOutNodes().clear();
+			
+			
+			return;
+		}
+
+	}
+	
+	private void updateTupleInfo(routerNode node) {
+		routerCache cache = super.getCache(node);
+		routerTuple tuple = node.getTuple(rResource);
+		
+		cache.removeResource(rResource);
+
+		routerNode lowerNode = super.getLowerNode(node);
+		routerCache lowerCache = super.getCache(lowerNode);
+		routerTuple lowerTuple = lowerNode.getTuple(rResource);
+		
+		tuple.addOutNodes(lowerNode);
+
+		lowerTuple.setValid();
+		lowerTuple.setInNode(node);
+		
+	}
+	
+	//caching, ousting, updating the tuple
 	private void caching(routerNode firstTupleNode, routerNode downNode) {
 		routerCache firstCache = super.getCache(firstTupleNode);
 		routerCache downCache = super.getCache(downNode);
@@ -268,6 +464,49 @@ public class Cls extends NewAlgo {
 			}
 		}
 		return null;
+	}
+	
+	public void showPathBeforeRouting() {
+		out.println("Requesting resource " + this.rResource.getID() + " size is " + this.rResource.getSize());
+		out.print("Path to Server: ");
+		//print path
+		for (int i = 0; i < vlist.size(); i++) {
+			routerNode each = vlist.get(i);
+			if (i == vlist.size() - 1)
+				out.println(each.getid());
+			else 
+				out.print(each.getid() + " -> ");
+		}
+		//print tuple
+		for (int i = 0; i < vlist.size(); i++) {
+			routerNode each = vlist.get(i);
+			if (i == vlist.size() - 1)
+				out.println(this.makeString(each));
+			else 
+				out.print(this.makeString(each) + " -> ");
+		}
+	}
+
+	public void showPathAfterRouting() {
+		out.print("Real path:      ");
+		//print path
+		for (int i = 0; i < realList.size(); i++) {
+			routerNode each = realList.get(i);
+			if (i == realList.size() - 1) 
+				out.println(each.getid());
+			else 
+				out.print(each.getid() + " -> ");
+		}
+		//print tuple
+		for (int i = 0; i < realList.size(); i++) {
+			routerNode each = realList.get(i);
+			if (i == realList.size() - 1) {
+				out.println(this.makeString(each));
+				out.println();
+			}
+			else 
+				out.print(this.makeString(each) + " -> ");
+		}
 	}
 	
 	public String makeString(routerNode node) {

@@ -38,7 +38,7 @@ public class routerMain {
     public double HitRate = 0.0;
     public double PathStr = 0.0;
     public int HitNumber = 0;
-    public static int requestTime = 100000;
+    public static int requestTime = 10000;
 
     public routerMain() {
     	

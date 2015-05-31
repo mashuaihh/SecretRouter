@@ -185,9 +185,6 @@ public class routerCache {
 	}
 	
 	public void removeResource(routerResource resource) {
-		if (resource == null) {
-			return;
-		}
 		this.Llist.remove(resource);
 		this.remainingCacheSize += resource.getSize();
 	}
@@ -299,6 +296,36 @@ public class routerCache {
 		} else {
 			return null;
 		}
+	}
+
+	/**
+	 * overloading the CLS+ saveThisResource function in which
+	 * popularity of content is not considered.
+	 * the remaining size is not enough for the resource.
+	 * @param thisResource
+	 * @return null if no need to cache this resource. A list<routerResource> to be replaced if 
+	 * the replace is necessary.
+	 */
+	public List<routerResource> saveThisResource(routerResource thisResource, boolean isCls) {
+		List<routerResource> replacedResourceList = new ArrayList<routerResource>();
+
+		int size = thisResource.getSize();
+		int sumSize = this.remainingCacheSize;
+
+		for (routerResource se : this.resourceCountList) {
+//			if (this.hasResourceInCountList(se) && thisResource.getID() != se.getID()) {
+//			if (this.hasResource(thisResource) && thisResource.getID() != se.getID()) {
+			if (this.hasCountListResourceInCache(se) && thisResource.getID() != se.getID()) {
+				replacedResourceList.add(se);
+				int eachSize = se.getSize();
+				sumSize += eachSize;
+				if (sumSize >= size) {
+					break;
+				}
+			}
+		}
+		
+		return replacedResourceList;
 	}
 	
 	/**
