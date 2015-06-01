@@ -74,10 +74,11 @@ public class Cls extends NewAlgo {
 				findEndOfTrail(firstTupleNode);
 				if (realList.size() > vlist.size()) {
 					realList = vlist;
+					return;
 				}
 				printPath();
 				
-					super.addHitNum();
+				super.addHitNum();
 				//for caching
 //				caching(firstTupleNode, downNode);
 				this.tupleNodePullDown();
@@ -92,7 +93,7 @@ public class Cls extends NewAlgo {
 	 * @param node
 	 * @return
 	 */
-	private routerNode findEndOfTrail(routerNode node) {
+	public routerNode findEndOfTrail(routerNode node) {
 		//add to the realList
 		realList.add(node);
 		
@@ -178,15 +179,9 @@ public class Cls extends NewAlgo {
 
 				if (replacedResourceList != null) {
 
-					//cache this resource, this resource is hotter than 
-					//all to be ousted resources
 					for (routerResource e : replacedResourceList) {
 						routerResource resource = lowerCache.getResourceById(e.getID());
 						lowerCache.removeResource(resource);
-
-						//update the trail after removing
-//						routerTuple removedTuple = lowerNode.getTuple(resource);
-//						removedTuple.deleteTuple();
 
 						replacedRealResourceList.add(resource); 
 					}
@@ -299,80 +294,6 @@ public class Cls extends NewAlgo {
 		
 	}
 	
-	//caching, ousting, updating the tuple
-	private void caching(routerNode firstTupleNode, routerNode downNode) {
-		routerCache firstCache = super.getCache(firstTupleNode);
-		routerCache downCache = super.getCache(downNode);
-		
-		routerTuple firstTuple = firstTupleNode.getTuple(rResource);
-		routerTuple downTuple = downNode.getTuple(rResource);
-		
-		if (!firstCache.isServer()) {
-			//if caching succeeds
-			if (downCache.scheduleLRU(rResource, downNode)) {
-				//init downTuple
-				downTuple.setValid();
-				downTuple.setInNode(firstTupleNode);
-				//cache resource
-				// if size == 0, then the firstTupleNode contains the cache.
-				if (firstTuple.getOutNodes().size() == 0) {
-					firstCache.removeResource(rResource);
-				} else {
-					//firstTuple has branch out. And the cache is found out there.
-					//firstTupleNode has no cache 
-				}
-
-				//add out nodes
-				firstTuple.addOutNodes(downNode);
-			}
-
-		} else {
-
-			if (downCache.scheduleLRU(rResource, downNode)) {
-				//firstTupleNode is server
-				downTuple.setInNode(null);
-				downTuple.setValid();
-			}
-			processRemovedResources(downNode);
-		}
-	}
-	
-	private routerNode processRemovedResources(routerNode node) {
-		routerCache cache = super.getCache(node);
-		if (cache.isServer() || cache.isOutResourceListEmpty()) {
-			return null;
-		} else {
-			routerNode upNode = super.getUpperNode(node);
-			routerCache upCache = super.getCache(upNode);
-			//if upNode's outList has multiple nodes, then just delete the cache
-			//in the node cache, and delete the corresponding out node in the 
-			//upNode's outList.
-			List<routerResource> resList = cache.getOutResourceList();
-			List<routerResource> tempList = new ArrayList<routerResource>();
-			printOut(resList, node);
-			//copy the list
-			for (int i = 0; i < resList.size(); i++) {
-				routerResource res = resList.get(i);
-				tempList.add(res);
-			}
-			for (routerResource e : tempList) {
-				routerTuple deletedTuple = node.getTuple(e);
-				deletedTuple.deleteTuple();
-			//if upNode's outList has multiple nodes, then just delete the cache
-			//in the node cache, and delete the corresponding out node in the 
-			//upNode's outList.
-				routerTuple upTuple = upNode.getTuple(e);
-				List<routerNode> outList = upTuple.getOutNodes();
-				if (outList.size() > 1) {
-					outList.remove(node);
-					break;
-				}
-				if (upCache.scheduleLRU(e, upNode))
-					cache.removeOutResource(e);
-			}
-			return processRemovedResources(upNode); 
-		}
-	}
 
 	private void printOut(List<routerResource> eList, routerNode node) {
 		File file = new File("d:\\clsResult.txt");

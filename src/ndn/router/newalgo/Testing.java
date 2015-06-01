@@ -21,7 +21,7 @@ import ndn.router.cache.simulationEvent;
  */
 
 public class Testing {
-	private static int requestTime = 100;
+	private static int requestTime = 10000;
 	private static int cacheSize = 10;
 	private static int nodeNumber = 5;
 	private List<routerNode> nodeList = new ArrayList<routerNode>();
@@ -133,9 +133,10 @@ public class Testing {
 		simulationEvent se = new simulationEvent(0, 0, requestNode, resource, this.serverNode);
 		List<routerNode> vlist = this.getVList(idx);
 		
-		Cls algo = new Cls(se, vlist, this.routerCacheTable);
-		algo.routing();
-		algo.showPath();
+			Cls algo = new Cls(se, vlist, this.routerCacheTable);
+			algo.showPathBeforeRouting();
+			algo.routing();
+			algo.showPathAfterRouting();
 
 	}
 	
@@ -148,16 +149,28 @@ public class Testing {
  *    2     3
  *          4 
  */
+		//resource count
 		testList.add("4,3");
 		testList.add("4,3");
 		testList.add("4,3");
-		testList.add("4,5");
-		testList.add("4,5");
-		testList.add("4,5");
-		testList.add("4,8");
-		testList.add("4,8");
-		testList.add("4,8");
 		testList.add("4,3");
+		testList.add("4,3");
+		testList.add("4,3");
+		testList.add("4,9");
+		testList.add("4,9");
+		testList.add("4,9");
+
+		//oust multiple resources
+//		testList.add("4,3");
+//		testList.add("4,3");
+//		testList.add("4,3");
+//		testList.add("4,5");
+//		testList.add("4,5");
+//		testList.add("4,5");
+//		testList.add("4,8");
+//		testList.add("4,8");
+//		testList.add("4,8");
+//		testList.add("4,3");
 
 //		testList.add("4,3");
 //		testList.add("4,3");
@@ -202,7 +215,7 @@ public class Testing {
 			simulationEvent se = new simulationEvent(0, 0, requestNode, resource, this.serverNode);
 			List<routerNode> vlist = this.getVList(requestNodeId);
 			
-			Cls algo = new Cls(se, vlist, this.routerCacheTable);
+			ClsPlus algo = new ClsPlus(se, vlist, this.routerCacheTable);
 			algo.showPathBeforeRouting();
 			algo.routing();
 			algo.showPathAfterRouting();

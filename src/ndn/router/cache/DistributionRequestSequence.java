@@ -219,7 +219,7 @@ public class DistributionRequestSequence {
 //	    	double pp = reRandom.nextDouble();
 	    	
 	    	List<Double> doubleList = new ArrayList<Double>();
-	    	for (int i = 0; i < 8; i++) {
+	    	for (int i = 0; i < 15; i++) {
 	    		double m = reRandom.nextDouble();
 	    		doubleList.add(m);
 	    	}
