@@ -21,7 +21,7 @@ public class routerMain {
     public static final int powerlawGenerator = 0;  // generating powerlaw sequence 0-new 1-load
     
     public static final int iswitch2 = 0; // for generating resource request// 0-create request 1-load request
-    public static final int vertexNum = 7;
+    public static final int vertexNum = 96;
   
     
     // some constants
@@ -38,7 +38,10 @@ public class routerMain {
     public double HitRate = 0.0;
     public double PathStr = 0.0;
     public int HitNumber = 0;
+    public int extraHop = 0;
+    public int extraLoad = 0;
     public static int requestTime = 100000;
+//    public static int requestTime = 1;
 
     public routerMain() {
     	
@@ -106,6 +109,8 @@ public class routerMain {
 		this.HitRate = rDSP.getHitRate();
 		this.PathStr = rDSP.getPathStr();
 		this.HitNumber = rDSP.HitNumber;
+		this.extraHop = rDSP.getExtraHop();
+		this.extraLoad = rDSP.getExtraLoad();
 		routingDijkstraShortestPath.clearStat();
 		
         // close file		
@@ -129,6 +134,8 @@ public class routerMain {
 		fileOut.println("Hit number: " + this.HitNumber);
 		fileOut.println("Request number: " + routerMain.requestTime);
 		fileOut.println("Path Stretch: " + this.PathStr);
+		fileOut.println("Extra Hop: " + this.extraHop);
+		fileOut.println("Extra Load: " + this.extraLoad);
 		fileOut.println();
 		fileOut.println("----------------------------------------------------");
 		fileOut.close();

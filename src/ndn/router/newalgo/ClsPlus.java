@@ -222,6 +222,10 @@ public class ClsPlus extends Cls {
 	 * @param resource
 	 */
 	public void oustedResourceToSource(routerNode node, routerResource resource) {
+		
+		super.addExtraHop();
+		super.addExtraLoad(resource.getSize());
+		
 		routerCache cache = super.getCache(node);
 		routerTuple tuple = node.getTuple(resource);
 		

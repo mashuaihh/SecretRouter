@@ -21,6 +21,8 @@ import ndn.router.cache.simulationEvent;
 public class Cls extends NewAlgo {
 	
 	private routerNode firstTupleNode = getTupleNode();
+	private static int extraHop = 0;
+	private static int extraLoad = 0;
 
 	public Cls(simulationEvent se, List<routerNode> vlist, Map<routerNode, routerCache> rMap) {
 		super(se, vlist, rMap);
@@ -213,6 +215,10 @@ public class Cls extends NewAlgo {
 	 * @param resource
 	 */
 	public void oustedResourceToSource(routerNode node, routerResource resource) {
+		
+		super.addExtraHop();
+		super.addExtraLoad(resource.getSize());
+		
 		routerCache cache = super.getCache(node);
 		routerTuple tuple = node.getTuple(resource);
 		

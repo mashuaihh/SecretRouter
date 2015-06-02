@@ -80,9 +80,12 @@ public class GraphTopologyRandom {
             try{
             	rgraph = new GraphFactory().create();
 //            	BufferedReader graphreader = new BufferedReader(new FileReader("C:/RICDNGraphTopology.txt"));
-            	BufferedReader graphreader = new BufferedReader(new FileReader("c:/sb6.txt"));
+//            	BufferedReader graphreader = new BufferedReader(new FileReader("c:/sb6.txt"));
+            	BufferedReader graphreader = new BufferedReader(new FileReader("C:/n=96GraphTopology.txt"));
+
             	String line = graphreader.readLine();  
             	StringTokenizer tokenizer;
+
             	
             	// add vertices
             	if(line == null) return;

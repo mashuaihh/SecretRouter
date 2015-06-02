@@ -21,12 +21,31 @@ public class NewAlgo {
 	private static int realPathNum = 0;
 	private static int oriPathNum = 0;
 	
+	private static int extraHop = 0;
+	private static int extraLoad = 0;
+	
 	public NewAlgo(simulationEvent se, List<routerNode> vlist, Map<routerNode, routerCache> rMap) {
 		this.rMap = rMap;
 		this.se = se;
 		this.rResource = se.getrouterResource();
 		this.vlist = vlist;
 		this.addRequestNum();
+	}
+	
+	public void addExtraHop() {
+		NewAlgo.extraHop++;
+	}
+	
+	public void addExtraLoad(int i) {
+		NewAlgo.extraLoad += i;
+	}
+	
+	public int getExtraHop() {
+		return NewAlgo.extraHop;
+	}
+
+	public int getExtraLoad() {
+		return NewAlgo.extraLoad;
 	}
 	
 	public void showPath() { out.println();
@@ -110,6 +129,8 @@ public class NewAlgo {
 		NewAlgo.requestNum = 0;
 		NewAlgo.oriPathNum = 0;
 		NewAlgo.realPathNum = 0;
+		NewAlgo.extraHop = 0;
+		NewAlgo.extraLoad = 0;
 	}
 	
 	public List<routerNode> getVList() {
@@ -143,5 +164,11 @@ public class NewAlgo {
 	public void addPathNum() {
 		NewAlgo.oriPathNum += this.vlist.size();
 		NewAlgo.realPathNum += this.realList.size();
+	}
+	
+	public static void main(String[] args) {
+		String a = "Extra Hop: d";
+		int idx = a.indexOf(":");
+		System.out.println(idx);
 	}
 }

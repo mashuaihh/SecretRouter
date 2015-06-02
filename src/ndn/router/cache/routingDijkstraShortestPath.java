@@ -82,6 +82,8 @@ public class routingDijkstraShortestPath {
 			this.HitRate = algo.getHitRate();
 			this.PathStr = algo.getPathStr();
 			this.HitNumber = algo.getHitNum();
+			this.extraHop = algo.getExtraHop();
+			this.extraLoad = algo.getExtraLoad();
 		} else if (algoType.equals("cls")) {
 			Cls algo = new Cls(se, vlist, this.rMap);
 			algo.routing();
@@ -91,6 +93,8 @@ public class routingDijkstraShortestPath {
 			this.HitRate = algo.getHitRate();
 			this.PathStr = algo.getPathStr();
 			this.HitNumber = algo.getHitNum();
+			this.extraHop = algo.getExtraHop();
+			this.extraLoad = algo.getExtraLoad();
 
 		} else if (algoType.equals("ccn")) {
 			Ccn algo = new Ccn(se, vlist, this.rMap);
@@ -101,6 +105,9 @@ public class routingDijkstraShortestPath {
 			this.HitRate = algo.getHitRate();
 			this.PathStr = algo.getPathStr();
 			this.HitNumber = algo.getHitNum();
+			this.extraHop = algo.getExtraHop();
+			this.extraLoad = algo.getExtraLoad();
+			
 		} else if (algoType.equals("cls+")) {
 			ClsPlus algo = new ClsPlus(se, vlist, this.rMap);
 			algo.showPath();
@@ -111,6 +118,9 @@ public class routingDijkstraShortestPath {
 			this.HitRate = algo.getHitRate();
 			this.PathStr = algo.getPathStr();
 			this.HitNumber = algo.getHitNum();
+			this.extraHop = algo.getExtraHop();
+			this.extraLoad = algo.getExtraLoad();
+
 		}
 		
 		
@@ -159,6 +169,14 @@ public class routingDijkstraShortestPath {
 		return this.PathStr;
 	}
 	
+	public int getExtraHop() {
+		return this.extraHop;
+	}
+	
+	public int getExtraLoad() {
+		return this.extraLoad;
+	}
+	
 	public static void clearStat() {
 		NewAlgo.clearStat();
 	}
@@ -181,4 +199,6 @@ public class routingDijkstraShortestPath {
 	public int HitNumber = 0;
 	public int requestNum = 0; 
 	private double PathStr = 0;
+	public int extraHop = 0; //for storing ousted resource's moving hops
+	public int extraLoad = 0; //for storing ousted resources' moving load
 }
