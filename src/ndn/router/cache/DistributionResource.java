@@ -4,6 +4,7 @@
 package ndn.router.cache;
 
 import java.io.BufferedReader;
+import java.io.File;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.PrintWriter;
@@ -101,11 +102,20 @@ public class DistributionResource {
 	        	 * set all nodes' hop
 	        	 * @author Mashuai
 	        	 */
-	        	for (routerNode e : vlist) {
-	        		List<routerNode> lllist = getPathVertexList(e, serverNode);
-	        		int hop = lllist.size() - 1;
-	        		e.setHop(hop);
-	        	}
+	        	try {
+					File hopFile = new File("d:\\hopResult.txt");
+					PrintWriter pss = new PrintWriter(hopFile);
+					for (routerNode e : vlist) {
+						List<routerNode> lllist = getPathVertexList(e, serverNode);
+						int hop = lllist.size() - 1;
+						e.setHop(hop);
+						pss.println(hop + " Node " + e.getid());
+					}
+					pss.close();
+				} catch (Exception e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				}
 	        	
 	        	/**
 	        	 * Initial the tuple of every resource in every node.

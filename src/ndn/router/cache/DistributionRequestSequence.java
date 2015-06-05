@@ -218,21 +218,22 @@ public class DistributionRequestSequence {
 	    	// produce a resource request
 //	    	double pp = reRandom.nextDouble();
 	    	
+	    	//generate 10 double numbers and pick out the largest
+	    	//to choose a high popularity resource
 	    	List<Double> doubleList = new ArrayList<Double>();
 	    	for (int i = 0; i < 10; i++) {
 	    		double m = reRandom.nextDouble();
 	    		doubleList.add(m);
 	    	}
-	    	
-	    	double pp = 0.0;
+	    	double largest = 0.0;
 	    	for (Double d : doubleList) {
-	    		if (d > pp) {
-	    			pp = d;
+	    		if (d > largest) {
+	    			largest = d;
 	    		}
 	    	}
 	    	
 			int index = 0;  
-			while(pp > requestFrequency[index]) index++; // so index is a picked random number
+			while(largest > requestFrequency[index]) index++; // so index is a picked random number
 	    	routerResource rR = rQueue[index];
 //			int ran = new Random().nextInt(10);
 //	    	routerResource rR = rQueue[ran];
@@ -245,7 +246,7 @@ public class DistributionRequestSequence {
 			do {
 	    		requestNode = rTable.get(routerRandom.nextInt(rTablesize));
 	    		requestCache = this.rMap.get(requestNode);
-	    	} while(requestNode.getid() == 0);
+	    	} while(requestNode.getid() == 0 || requestNode.getHop() < routerMain.routerHop);
 	    	
 	    	
 	    	/**

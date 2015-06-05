@@ -22,6 +22,9 @@ public class routerMain {
     
     public static final int iswitch2 = 0; // for generating resource request// 0-create request 1-load request
     public static final int vertexNum = 96;
+    
+//    public static final int routerHop = 5; //5 for flat topology
+    public static final int routerHop = 4; //10 for hierarchical topology
   
     
     // some constants
@@ -40,7 +43,7 @@ public class routerMain {
     public int HitNumber = 0;
     public int extraHop = 0;
     public int extraLoad = 0;
-    public static int requestTime = 100000;
+    public static int requestTime = 10000;
 //    public static int requestTime = 1;
 
     public routerMain() {

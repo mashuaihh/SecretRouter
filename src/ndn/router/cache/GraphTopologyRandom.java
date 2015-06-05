@@ -81,7 +81,10 @@ public class GraphTopologyRandom {
             	rgraph = new GraphFactory().create();
 //            	BufferedReader graphreader = new BufferedReader(new FileReader("C:/RICDNGraphTopology.txt"));
 //            	BufferedReader graphreader = new BufferedReader(new FileReader("c:/sb6.txt"));
+            	//hierarchy n=96
             	BufferedReader graphreader = new BufferedReader(new FileReader("C:/n=96GraphTopology.txt"));
+            	//flat n=96
+//            	BufferedReader graphreader = new BufferedReader(new FileReader("C:/96flatGraphTopology.txt"));
 
             	String line = graphreader.readLine();  
             	StringTokenizer tokenizer;
