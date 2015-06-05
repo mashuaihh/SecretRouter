@@ -10,6 +10,7 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.util.Random;
 
 import javax.swing.JFrame;
 
@@ -28,7 +29,7 @@ public class routerMain {
   
     
     // some constants
-    public static final int resourceNum = 1000;  // default 4 6 8 1000
+    public static final int resourceNum = 10000;  // default 4 6 8 1000
     public static  double EFRThreshold = 0.00157964;  // this is actually set in class DistributionRequestSequence
     public static final double CacheThreshold = 1.0;    // 0.5 0.1
     //public static final double routerCacheSizedenominator = 10; // default= resourceNum/10
@@ -76,7 +77,16 @@ public class routerMain {
 //		jf.pack();
 //		jf.setVisible(true);
 
-        DistributionRequestSequence drs = new DistributionRequestSequence(resDistribution);
+        DistributionRequestSequence drs = null;
+
+        Random rand = new Random();
+        int num = rand.nextInt(5) + 1;
+        if (num % 5 == 0) {
+        drs = new DistributionRequestSequence(resDistribution, 0);
+        } else {
+        drs = new DistributionRequestSequence(resDistribution, 1);
+        }
+
         // generate powerlaw accees frequency
         drs.powlawGenerate(this.aa);
         // generate router

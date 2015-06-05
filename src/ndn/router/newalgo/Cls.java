@@ -225,7 +225,6 @@ public class Cls extends NewAlgo {
 		//1.find inNode from tuple 
 		routerNode inNode = tuple.getInNode();
 		routerCache inCache = super.getCache(inNode);
-		routerTuple inTuple = inNode.getTuple(resource);
 		
 		//2.delete tuple for this node
 		tuple.deleteTuple();
@@ -234,6 +233,8 @@ public class Cls extends NewAlgo {
 		if (inCache.isServer()) {
 			return;
 		}
+
+		routerTuple inTuple = inNode.getTuple(resource);
 
 		//4.update inNode tuple
 		//if has multiple outs, delete the out in outList

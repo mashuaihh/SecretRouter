@@ -25,7 +25,7 @@ public class DistributionRequestSequence {
 	/**
 	 * 
 	 */
-	public DistributionRequestSequence(DistributionResource DR) {
+	public DistributionRequestSequence(DistributionResource DR, int isRandom) {
 		this.DR = DR;
         // get the node table
         this.rTable = new ArrayList<routerNode>(Collections.unmodifiableCollection(DR.getrouterTable().keySet()));
@@ -35,6 +35,7 @@ public class DistributionRequestSequence {
         this.rMap = DR.getrouterTable();
         mRandom = new Random();
         routerRandom = new Random();
+        this.isRandom = isRandom;
 
 /**
  * 
@@ -285,20 +286,23 @@ public class DistributionRequestSequence {
 	    	
 			int index = 0;  
 			while(largest > requestFrequency[index]) index++; // so index is a picked random number
+			//choose a random resource
 	    	routerResource rR = rQueue[index];
 //			int ran = new Random().nextInt(10);
 //	    	routerResource rR = rQueue[ran];
-	    	
+
 	    	/**
-	    	 * set request node and server cannot be request node
+	    	 * choose requestNode according to resource
 	    	 */
 	    	routerNode requestNode = null;
-	    	routerCache requestCache = null;
-			do {
-	    		requestNode = rTable.get(routerRandom.nextInt(rTablesize));
-	    		requestCache = this.rMap.get(requestNode);
-	    	} while(requestNode.getid() == 0 || requestNode.getHop() < routerMain.routerHop);
-	    	
+	    	if (this.isRandom == 0) {
+	    		//i % 3 == 0
+	    		Random dRan = new Random();
+	    		int ran = dRan.nextInt(this.requestNodeList.size());
+	    		requestNode = this.requestNodeList.get(ran);
+	    	} else {
+	    		requestNode = this.resourceNodeMap.get(rR);
+	    	}
 	    	
 	    	/**
 	    	 * set destination to server node 0
@@ -453,11 +457,12 @@ public class DistributionRequestSequence {
     private double QcacheSquareroot;          // coefficient of square root cache probability 
     private List<routerNode> requestNodeList = new ArrayList<routerNode>();
     private Map<routerResource, routerNode> resourceNodeMap = new HashMap<routerResource, routerNode>();
+    private int isRandom;
     
     public static void main(String[] args) {
     	int a = 10000;
     	int b = 60;
-    	int end = a / b;
+    	int end = 4 % 3;
     	System.out.println(end);
     }
 }
