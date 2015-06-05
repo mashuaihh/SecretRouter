@@ -9,6 +9,7 @@ import java.io.FileWriter;
 import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Random;
@@ -35,7 +36,17 @@ public class DistributionRequestSequence {
         mRandom = new Random();
         routerRandom = new Random();
 
+/**
+ * 
+ * find eligible requestNodes and put them into requestNodeList
+	    	 */
+        for (routerNode n : this.rTable) {
+        	if (n.getid() != 0 && n.getHop() >= routerMain.routerHop) {
+        		this.requestNodeList.add(n);
+        	}
+        }
 
+	mapResource(); 
         
         reRandom = new Random();
         
@@ -50,6 +61,46 @@ public class DistributionRequestSequence {
         }catch(Exception e){
         	e.printStackTrace();
         }
+	}
+	
+	/**
+	 * resources are mapped to nodes
+	 */
+	public void mapResource() {
+
+		//copy rQueue
+		List<routerResource> sampleList = new ArrayList<routerResource>();
+		for (int i = 0; i < rQueue.length; i++) {
+			routerResource res = rQueue[i];
+			sampleList.add(res);
+		}
+		
+		//calculate resources number in each node
+		int eachNodeHasResourceNum = routerMain.resourceNum / this.requestNodeList.size();
+		
+		//distribute resources in sampleList to resourceNodeMap
+		for (routerNode node : this.requestNodeList) {
+
+			for (int j = 0; j < eachNodeHasResourceNum; j++) {
+				Random ran = new Random();
+				int ranInt = ran.nextInt(sampleList.size());
+				routerResource resourceRan = sampleList.get(ranInt);
+				//put into hashmap
+				this.resourceNodeMap.put(resourceRan, node);
+				//delete the already allocated resource in sampleList
+				sampleList.remove(resourceRan);
+			}
+		//end of for (routerNode node : requestNodeList)
+		}
+		
+		while (this.resourceNodeMap.size() < routerMain.resourceNum) {
+			Random rand = new Random();
+			int randInt = rand.nextInt(this.requestNodeList.size());
+			routerNode node = this.rTable.get(randInt);
+			for (routerResource res : sampleList) {
+				this.resourceNodeMap.put(res, node);
+			}
+		}
 	}
 	
 	
@@ -400,5 +451,13 @@ public class DistributionRequestSequence {
     private double acceessprobability[];  // store access frequency
     private double Qcache;                // coefficient of cache probability
     private double QcacheSquareroot;          // coefficient of square root cache probability 
+    private List<routerNode> requestNodeList = new ArrayList<routerNode>();
+    private Map<routerResource, routerNode> resourceNodeMap = new HashMap<routerResource, routerNode>();
     
+    public static void main(String[] args) {
+    	int a = 10000;
+    	int b = 60;
+    	int end = a / b;
+    	System.out.println(end);
+    }
 }
