@@ -24,8 +24,8 @@ public class routerMain {
     public static final int iswitch2 = 0; // for generating resource request// 0-create request 1-load request
     public static final int vertexNum = 96;
     
-//    public static final int routerHop = 5; //5 for flat topology
-    public static final int routerHop = 4; //10 for hierarchical topology
+    public static final int routerHop = 5; //5 for flat topology
+//    public static final int routerHop = 4; //10 for hierarchical topology
   
     
     // some constants
@@ -79,13 +79,7 @@ public class routerMain {
 
         DistributionRequestSequence drs = null;
 
-        Random rand = new Random();
-        int num = rand.nextInt(5) + 1;
-        if (num % 5 == 0) {
-        drs = new DistributionRequestSequence(resDistribution, 0);
-        } else {
-        drs = new DistributionRequestSequence(resDistribution, 1);
-        }
+        drs = new DistributionRequestSequence(resDistribution);
 
         // generate powerlaw accees frequency
         drs.powlawGenerate(this.aa);
@@ -98,6 +92,11 @@ public class routerMain {
 		simulationEvent se;
 		long sTimes = routerMain.requestTime;
 		while(sTimes > 0){
+
+			if (sTimes % 1000 == 0) {
+				rDSP.clearResourceCount();
+			}
+
 			sTimes--;
 			se = drs.eventgenerate();
 			// if the resource is in the node that generate the request,just return
@@ -160,12 +159,12 @@ public class routerMain {
 	 */
 	public static void main(String[] args) {
 		double[] denomin = {0.1, 0.2, 0.3, 0.4, 0.5};
-//		double[] denomin = {0.9};
+//		double[] denomin = {0.3, 0.4, 0.5};
 		double[] aa = {-0.3, -0.9};
 //		double[] aa = {-0.9};
-		String[] algo = {"lcd", "ccn", "cls", "cls+"};
+//		String[] algo = {"lcd", "ccn", "cls", "cls+"};
 //		String[] algo = {"cls+"};
-//		String[] algo = {"cls", "cls+"};
+		String[] algo = {"cls", "cls+"};
 		
 		for (double each_aa : aa) {
 			for (double de : denomin) {

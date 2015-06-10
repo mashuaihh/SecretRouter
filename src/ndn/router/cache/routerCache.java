@@ -259,6 +259,12 @@ public class routerCache {
 		}
 	}
 	
+	public void clearResourceCountList() {
+		for (routerResource res : this.resourceCountList) {
+			res.clearCount();
+		}
+	}
+	
 	public List<routerResource> getResourceCountList() {
 		Collections.sort(this.resourceCountList);
 		return this.resourceCountList;

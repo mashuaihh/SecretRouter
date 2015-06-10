@@ -131,6 +131,14 @@ public class routingDijkstraShortestPath {
 		
 	}
 	
+	public void clearResourceCount() {
+		Collection<routerNode> col = this.gGraph.getVertices();
+		for (routerNode node : col) {
+			routerCache cache = this.rMap.get(node);
+			cache.clearResourceCountList();
+		}
+	}
+	
 	
 	private List<routerNode> getPathVertexList(routerNode beginNode, routerNode endNode) {
 		List<routerNode> vlist;

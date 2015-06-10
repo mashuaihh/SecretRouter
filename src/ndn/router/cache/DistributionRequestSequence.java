@@ -25,7 +25,7 @@ public class DistributionRequestSequence {
 	/**
 	 * 
 	 */
-	public DistributionRequestSequence(DistributionResource DR, int isRandom) {
+	public DistributionRequestSequence(DistributionResource DR) {
 		this.DR = DR;
         // get the node table
         this.rTable = new ArrayList<routerNode>(Collections.unmodifiableCollection(DR.getrouterTable().keySet()));
@@ -35,7 +35,6 @@ public class DistributionRequestSequence {
         this.rMap = DR.getrouterTable();
         mRandom = new Random();
         routerRandom = new Random();
-        this.isRandom = isRandom;
 
 /**
  * 
@@ -273,10 +272,17 @@ public class DistributionRequestSequence {
 	    	//generate 10 double numbers and pick out the largest
 	    	//to choose a high popularity resource
 	    	List<Double> doubleList = new ArrayList<Double>();
-	    	for (int i = 0; i < 10; i++) {
+
+	    	if (DistributionRequestSequence.times % 5 == 0 || DistributionRequestSequence.times % 5 == 1 || DistributionRequestSequence.times % 5 == 2 ) {
 	    		double m = reRandom.nextDouble();
 	    		doubleList.add(m);
+	    	} else {
+	    		for (int i = 0; i < (routerMain.resourceNum / 500); i++) {
+	    		double m = reRandom.nextDouble();
+	    		doubleList.add(m);
+	    		}
 	    	}
+
 	    	double largest = 0.0;
 	    	for (Double d : doubleList) {
 	    		if (d > largest) {
@@ -295,13 +301,17 @@ public class DistributionRequestSequence {
 	    	 * choose requestNode according to resource
 	    	 */
 	    	routerNode requestNode = null;
-	    	if (this.isRandom == 0) {
-	    		//i % 3 == 0
+	    	if (DistributionRequestSequence.times % 3 == 0 || DistributionRequestSequence.times % 3 == 1 ) {
 	    		Random dRan = new Random();
 	    		int ran = dRan.nextInt(this.requestNodeList.size());
 	    		requestNode = this.requestNodeList.get(ran);
 	    	} else {
 	    		requestNode = this.resourceNodeMap.get(rR);
+	    	}
+	    	DistributionRequestSequence.times++;
+
+	    	if (DistributionRequestSequence.times == 6) {
+	    		DistributionRequestSequence.times = 0;
 	    	}
 	    	
 	    	/**
@@ -457,12 +467,15 @@ public class DistributionRequestSequence {
     private double QcacheSquareroot;          // coefficient of square root cache probability 
     private List<routerNode> requestNodeList = new ArrayList<routerNode>();
     private Map<routerResource, routerNode> resourceNodeMap = new HashMap<routerResource, routerNode>();
-    private int isRandom;
+    public static long times = 0;
     
     public static void main(String[] args) {
-    	int a = 10000;
-    	int b = 60;
-    	int end = 4 % 3;
-    	System.out.println(end);
+    	int j = 0;
+    	for (int i = 100000; i > 0; i--) {
+    		if (i % 1000 == 0 ) {
+    			j++;
+    		}
+    	}
+    	System.out.println(j);
     }
 }

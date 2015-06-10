@@ -54,7 +54,7 @@ public class Cls extends NewAlgo {
 					realList = vlist;
 				}
 				printPath();
-					super.addHitNum();
+				super.addHitNum();
 
 			} else {
 				//Not the first firstTupleNode in vlist contains the tuple.

@@ -112,6 +112,10 @@ public class routerResource implements Comparable<routerResource> {
 		return this.count;
 	}
 	
+	public void clearCount() {
+		this.count = 0;
+	}
+	
 	
 	private int id;       // resource identity
 	private int size;   // resource size

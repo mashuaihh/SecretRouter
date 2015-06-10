@@ -50,6 +50,7 @@ public class NewAlgo {
 	
 	public void showPath() { out.println();
 		
+		out.println("The " + NewAlgo.requestNum + " times, the end is " + routerMain.requestTime);
 		out.println("Requesting resource " + this.rResource.getID());
 		out.print("Path to Server: ");
 		for (int i = 0; i < vlist.size(); i++) {

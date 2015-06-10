@@ -47,7 +47,7 @@ public class ClsPlus extends Cls {
 					realList = vlist;
 				}
 				printPath();
-					super.addHitNum();
+				super.addHitNum();
 
 			} else {
 				//Not the first firstTupleNode in vlist contains the tuple.
@@ -232,15 +232,14 @@ public class ClsPlus extends Cls {
 		//1.find inNode from tuple 
 		routerNode inNode = tuple.getInNode();
 		routerCache inCache = super.getCache(inNode);
-		routerTuple inTuple = inNode.getTuple(resource);
-		
-		//2.delete tuple for this node
-		tuple.deleteTuple();
-
 		//3.if inNode is server, end
 		if (inCache.isServer()) {
 			return;
 		}
+		routerTuple inTuple = inNode.getTuple(resource);
+		
+		//2.delete tuple for this node
+		tuple.deleteTuple();
 
 		//4.update inNode tuple
 		//if has multiple outs, delete the out in outList
