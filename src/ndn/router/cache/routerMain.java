@@ -44,7 +44,7 @@ public class routerMain {
     public int HitNumber = 0;
     public int extraHop = 0;
     public int extraLoad = 0;
-    public static int requestTime = 10000;
+    public static int requestTime = 50000;
 //    public static int requestTime = 1;
 
     public routerMain() {
@@ -159,11 +159,13 @@ public class routerMain {
 	 */
 	public static void main(String[] args) {
 		double[] denomin = {0.1, 0.2, 0.3, 0.4, 0.5};
+//		double[] denomin = {0.1};
 //		double[] denomin = {0.3, 0.4, 0.5};
 		double[] aa = {-0.3, -0.9};
 //		double[] aa = {-0.9};
 //		String[] algo = {"lcd", "ccn", "cls", "cls+"};
 //		String[] algo = {"cls+"};
+//		String[] algo = {"cls"};
 		String[] algo = {"cls", "cls+"};
 		
 		for (double each_aa : aa) {

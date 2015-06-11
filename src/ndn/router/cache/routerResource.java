@@ -140,20 +140,20 @@ public class routerResource implements Comparable<routerResource> {
     	}
    		cache.addResourceCount(resource3);
    		System.out.println(resource2.getCount());
-   		List<routerResource> list = cache.getResourceCountList();
-   		for (routerResource e : list) {
-   			System.out.println(e.getID() + "  " + e.getCount());
-   		}
-   		int i = 0;
-   		while(i < 6) {
-   			cache.addResourceCount(resource3);
-   			i++;
-   		}
-   		System.out.println();
-   		list = cache.getResourceCountList();
-   		for (routerResource e : list) {
-   			System.out.println(e.getID() + "  " + e.getCount());
-   		}
+//   		List<routerResource> list = cache.getResourceCountList();
+//   		for (routerResource e : list) {
+//   			System.out.println(e.getID() + "  " + e.getCount());
+//   		}
+//   		int i = 0;
+//   		while(i < 6) {
+//   			cache.addResourceCount(resource3);
+//   			i++;
+//   		}
+//   		System.out.println();
+//   		list = cache.getResourceCountList();
+//   		for (routerResource e : list) {
+//   			System.out.println(e.getID() + "  " + e.getCount());
+//   		}
    		
 System.out.println();
    		System.out.println(resource3.compareTo(resource1));

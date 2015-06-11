@@ -12,8 +12,6 @@ import ndn.router.cache.simulationEvent;
 
 public class ClsPlus extends Cls {
 //public class ClsPlus extends NewAlgo {
-	private List<routerNode> firstTupleToEnd = new ArrayList<routerNode>();
-	private routerNode serverNode = super.getServer();
 	private routerNode firstTupleNode = getTupleNode();
 			
 	public ClsPlus(simulationEvent se, List<routerNode> vlist, Map<routerNode, routerCache> rMap) {
@@ -28,9 +26,7 @@ public class ClsPlus extends Cls {
 			//no tuple appears during the trail to server
 			//Need to cache? Yes
 			routerNode serverNode = super.getServer();
-			routerNode downNode = super.getLowerNode(serverNode);
 			realList = vlist;
-			printPath();
 //			caching(serverNode, downNode);
 			this.serverPullDown(serverNode);
 
@@ -46,7 +42,6 @@ public class ClsPlus extends Cls {
 				if (realList.size() > vlist.size()) {
 					realList = vlist;
 				}
-				printPath();
 				super.addHitNum();
 
 			} else {
@@ -54,7 +49,6 @@ public class ClsPlus extends Cls {
 				//Tuple is found on half way to server.
 				//Need to cache? Yes
 				
-				routerNode downNode = super.getLowerNode(firstTupleNode);
 				//for showing path, ie making the realList
 				for (int i = 0; i < vlist.size() - 1; i++) {
 					//changing the realList
@@ -72,7 +66,6 @@ public class ClsPlus extends Cls {
 					addResourceCountInRealList();
 					return;
 				}
-				printPath();
 				
 				super.addHitNum();
 				//for caching

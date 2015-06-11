@@ -260,15 +260,16 @@ public class routerCache {
 	}
 	
 	public void clearResourceCountList() {
-		for (routerResource res : this.resourceCountList) {
+		for (int i = 0; i < this.resourceCountList.size(); i++) {
+			routerResource res = this.resourceCountList.get(i);
 			res.clearCount();
 		}
 	}
 	
-	public List<routerResource> getResourceCountList() {
-		Collections.sort(this.resourceCountList);
-		return this.resourceCountList;
-	}
+//	public List<routerResource> getResourceCountList() {
+//		Collections.sort(this.resourceCountList);
+//		return this.resourceCountList;
+//	}
 	
 	public boolean hasEnoughRemainingCacheSize(routerResource res) {
 		int resourceSize = res.getSize();
@@ -288,22 +289,29 @@ public class routerCache {
 	public List<routerResource> saveThisResource(routerResource thisResource) {
 		List<routerResource> replacedResourceList = new ArrayList<routerResource>();
 
-		Collections.sort(this.resourceCountList);
+		List<routerResource> toSortList = new ArrayList<routerResource>();
+		for (int i = 0; i < this.Llist.size(); i++) {
+			routerResource res = Llist.get(i);
+			int idx = res.getID();
+			routerResource countRes = this.getCountResourceById(idx);
+			toSortList.add(countRes);
+		}
+		Collections.sort(toSortList);
 
 		int size = thisResource.getSize();
 		int sumSize = this.remainingCacheSize;
 
-		for (routerResource se : this.resourceCountList) {
+		for (routerResource se : toSortList) {
 //			if (this.hasResourceInCountList(se) && thisResource.getID() != se.getID()) {
 //			if (this.hasResource(thisResource) && thisResource.getID() != se.getID()) {
-			if (this.hasCountListResourceInCache(se) && thisResource.getID() != se.getID()) {
+//			if (this.hasCountListResourceInCache(se) && thisResource.getID() != se.getID()) {
 				replacedResourceList.add(se);
 				int eachSize = se.getSize();
 				sumSize += eachSize;
 				if (sumSize >= size) {
 					break;
 				}
-			}
+//			}
 		}
 		//hotter than all resources to be replaced
 		if (this.largerThanAllResources(replacedResourceList, thisResource)) {
@@ -328,17 +336,13 @@ public class routerCache {
 		int size = thisResource.getSize();
 		int sumSize = this.remainingCacheSize;
 
-		for (routerResource se : this.resourceCountList) {
-//			if (this.hasResourceInCountList(se) && thisResource.getID() != se.getID()) {
-//			if (this.hasResource(thisResource) && thisResource.getID() != se.getID()) {
-			if (this.hasCountListResourceInCache(se) && thisResource.getID() != se.getID()) {
+		for (routerResource se : this.Llist) {
 				replacedResourceList.add(se);
 				int eachSize = se.getSize();
 				sumSize += eachSize;
 				if (sumSize >= size) {
 					break;
 				}
-			}
 		}
 		
 		return replacedResourceList;
@@ -365,13 +369,9 @@ public class routerCache {
 	}
 	
 	public void addAllResources(routerResource[] rQueue) {
-		for (routerResource e : rQueue) {
-			this.allResourcesList.add(e);
+		for (int i = 0; i < rQueue.length; i++) {
+			allResourcesList[i] = rQueue[i];
 		}
-	}
-	
-	public void addAllResource(routerResource res) {
-		this.allResourcesList.add(res);
 	}
 
 	private List<routerResource> outResourceList = new ArrayList<routerResource>(); //store the flushed out resources.
@@ -386,7 +386,8 @@ public class routerCache {
     private boolean isServer = false;
     //for CLS++
     private List<routerResource> resourceCountList = new ArrayList<routerResource>();
-    private List<routerResource> allResourcesList = new ArrayList<routerResource>();
+//    private List<routerResource> allResourcesList = new ArrayList<routerResource>();
+    private routerResource[] allResourcesList = new routerResource[routerMain.resourceNum];
     
     public static void main(String[] args) {
 
@@ -407,29 +408,29 @@ public class routerCache {
     	}
    		cache.addResourceCount(resource3);
    		System.out.println(resource2.getCount());
-   		List<routerResource> list = cache.getResourceCountList();
-   		for (routerResource e : list) {
-   			System.out.println(e.getID() + "  " + e.getCount() + " size " + e.getSize());
-   		}
+//   		List<routerResource> list = cache.getResourceCountList();
+//   		for (routerResource e : list) {
+//   			System.out.println(e.getID() + "  " + e.getCount() + " size " + e.getSize());
+//   		}
    		int i = 0;
    		while(i < 6) {
    			cache.addResourceCount(resource3);
    			i++;
    		}
    		System.out.println();
-   		list = cache.getResourceCountList();
-   		for (routerResource e : list) {
-   			System.out.println(e.getID() + "  " + e.getCount() + " size " + e.getSize());
-   		}
+//   		list = cache.getResourceCountList();
+//   		for (routerResource e : list) {
+//   			System.out.println(e.getID() + "  " + e.getCount() + " size " + e.getSize());
+//   		}
    		for (int j = 0; j < 2; j++) {
    			cache.addResourceCount(target);
    		}
 
-   		list = cache.getResourceCountList();
+//   		list = cache.getResourceCountList();
    		System.out.println();
-   		for (routerResource e : list) {
-   			System.out.println(e.getID() + "  " + e.getCount() + " size " + e.getSize());
-   		}
+//   		for (routerResource e : list) {
+//   			System.out.println(e.getID() + "  " + e.getCount() + " size " + e.getSize());
+//   		}
    		
    		List<routerResource> vlist = cache.saveThisResource(target);
    		if (vlist != null) {

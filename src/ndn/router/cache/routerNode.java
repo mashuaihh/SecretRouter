@@ -76,8 +76,9 @@ public class routerNode {
 	}
 	
 	public static void main(String[] args) {
-		for (int i = 1; i < 201; i++) {
-		System.out.println(i * 2);
+		List<Integer> a = new ArrayList<Integer>();
+		for (int i = 0; i < 100; i++) {
+			a.add(i);
 		}
 	}
 

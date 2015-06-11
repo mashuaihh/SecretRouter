@@ -37,7 +37,6 @@ public class Cls extends NewAlgo {
 			routerNode serverNode = super.getServer();
 			routerNode downNode = super.getLowerNode(serverNode);
 			realList = vlist;
-			printPath();
 //			caching(serverNode, downNode);
 			this.serverPullDown(serverNode);
 
@@ -53,7 +52,6 @@ public class Cls extends NewAlgo {
 				if (realList.size() > vlist.size()) {
 					realList = vlist;
 				}
-				printPath();
 				super.addHitNum();
 
 			} else {
@@ -78,7 +76,6 @@ public class Cls extends NewAlgo {
 					realList = vlist;
 					return;
 				}
-				printPath();
 				
 				super.addHitNum();
 				//for caching
@@ -302,82 +299,7 @@ public class Cls extends NewAlgo {
 	}
 	
 
-	private void printOut(List<routerResource> eList, routerNode node) {
-		File file = new File("d:\\clsResult.txt");
-		PrintWriter fileOut = null;
-
-		try {
-			fileOut = new PrintWriter(new BufferedWriter(new FileWriter(file, true)));
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		fileOut.print(node.getid() + " is removing ");
-		for (routerResource ss : eList) {
-			fileOut.print(ss.getID() + ", ");
-		}
-
-		fileOut.println();
-		fileOut.println();
-		fileOut.println("---------------------------");
-		fileOut.close();
-	}
 	
-	protected void printPath() {
-		File file = new File("d:\\clsResult.txt");
-		PrintWriter fileOut = null;
-
-		try {
-			fileOut = new PrintWriter(new BufferedWriter(new FileWriter(file, true)));
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-
-		fileOut.println("Resource is " + super.rResource.getID()+ " size is " + super.rResource.getSize());
-		fileOut.print("Orig Path: ");
-		for (int i = 0; i < vlist.size(); i++) {
-			routerNode node = vlist.get(i);
-			if (i == (vlist.size() - 1)) {
-				fileOut.println(node);
-			} else {
-				fileOut.print(node + " -> ");
-			}
-		}
-		
-		for (int i = 0; i < vlist.size(); i++) {
-			routerNode node = vlist.get(i);
-			String tupleStr = makeString(node);
-			if (i == (vlist.size() - 1)) {
-				fileOut.println(tupleStr);
-			} else {
-				fileOut.print(tupleStr + " -> ");
-			}
-		}
-		
-		fileOut.print("Real Path: ");
-		for (int i = 0; i < super.realList.size(); i++) {
-			routerNode node = super.realList.get(i);
-			if (i == (super.realList.size() - 1)) {
-				fileOut.println(node);
-			} else {
-			fileOut.print(node + " -> ");
-			}
-		}
-
-		for (int i = 0; i < super.realList.size(); i++) {
-			routerNode node = super.realList.get(i);
-			String tupleStr = makeString(node);
-			if (i == (super.realList.size() - 1)) {
-				fileOut.println(tupleStr);
-			} else {
-				fileOut.print(tupleStr + " -> ");
-			}
-		}
-
-		fileOut.println();
-		fileOut.close();
-	}
 	
 	/**
 	 * Search only non-server nodes
